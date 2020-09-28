@@ -1,10 +1,9 @@
 % Program name: radio_sensor_08_04.m
 % 9-state Kalman filter with 4 radio sensors for 6DOF motion tracking
 % simulation with 6-state EKF with accel and magnetometers as measurements
-% uwb NLOS simulation
+% ????uwb NLOS???????
 % 9/10/2020
-% put project to github.com, teacher could review my changes
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% put p
 close all;
 clear all;
 clc;
