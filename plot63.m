@@ -1,0 +1,138 @@
+%
+figure(1)
+subplot(311)
+plot(time,mag_xm,'b',time,x_m_B,'r')
+ylabel('x-axis mag field')
+subplot(312)
+plot(time,mag_ym,'b',time,y_m_B,'r')
+ylabel('y-axis mag field')
+subplot(313)
+plot(psi_err*r2d)
+ylabel('Psi angle error in deg')
+%plot(time,w_EB_B*r2d)
+%xlabel('Time in seconds')
+%ylabel('Rates in deg.')
+grid
+%
+figure (3)
+subplot(311)
+% plot3(x_p_N,y_p_N,z_p_N,'r-',position(1,:),position(2,:),position(3,:),'b.',xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
+plot3(x_p_N,y_p_N,z_p_N,'r-',xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
+xlabel('X position in m')
+ylabel('Y position in m')
+axis([-50 50 -50 50 -50 50])
+grid
+subplot(312)
+plot(t00,x_v_N,'r.',t00,y_v_N,'g-',t00,z_v_N,'b')
+xlabel('Time in sec')
+ylabel('Velocity in m/s')
+grid
+subplot(313)
+plot(t0,x_a_N/g,'r.',t0,y_a_N/g,'g-',t0,z_a_N/g,'b')
+ylabel('X-Y-Z sensor accel in g in N-frame')
+xlabel('Time in sec')
+% axis([t0(1) t0(k-1) -1 1 -1 1])
+grid
+%
+figure (8)
+subplot(311)
+plot(t00,x_a_N/g,'r.',t00,x_a_B/g,'g-',t00,axm/g,'b')
+%xlabel('Time in sec')
+ylabel('X accel in g')
+subplot(312)
+plot(t00,y_a_N/g,'r.',t00,y_a_B/g,'g-',t00,aym/g,'b')
+%xlabel('Time in sec')
+ylabel('Y accel in g')
+subplot(313)
+plot(t00,z_a_N/g,'r.',t00,z_a_B/g,'g-',t00,azm/g,'b')
+%xlabel('Time in sec')
+ylabel('z linear accel in g')
+%
+figure (9)
+subplot(311)
+plot(t00,phi_N*r2d,'b')
+%xlabel('Time in sec')
+ylabel('Phi angle in deg')
+subplot(312)
+plot(t00,theta_N*r2d,'b')
+%xlabel('Time in sec')
+ylabel('Theta angle in deg')
+subplot(313)
+plot(t00,psi_N*r2d,'b')
+%xlabel('Time in sec')
+ylabel('Psi angle in deg')
+%
+figure (4)
+subplot(311)
+plot(t00,axm/g,'r.',t00,x_a_B/g,'g-')
+%xlabel('Time in sec')
+ylabel('X accel in g')
+subplot(312)
+plot(t00,aym/g,'r.',t00,y_a_B/g,'g-')
+%xlabel('Time in sec')
+ylabel('Y accel in g')
+subplot(313)
+plot(t00,azm/g,'r.',t00,z_a_B/g,'g-')
+%xlabel('Time in sec')
+ylabel('z accel in g')
+%
+figure (2)
+subplot(311)
+plot (time(n1:n2),dx(n1:n2)*r2d,'b')
+ylabel('X angle errors in deg')
+grid
+subplot(312)
+plot (time(n1:n2),dy(n1:n2)*r2d,'g')
+ylabel('Y angle errors in deg')
+grid
+subplot(313)
+plot (time(n1:n2),dz(n1:n2)*r2d,'r')
+xlabel('Time in seconds')
+ylabel('Z angle errors in deg')
+grid
+%
+figure (6)
+subplot(311)
+plot (time,dq11*r2d,'b')
+ylabel('X angle errors in deg')
+grid
+subplot(312)
+plot (time,dq21*r2d,'g')
+ylabel('Y angle errors in deg')
+grid
+subplot(313)
+plot (time,dq31*r2d,'r')
+xlabel('Time in seconds')
+ylabel('Z angle errors in deg')
+grid
+%
+figure (7)
+subplot(311)
+plot (time,dx*r2d,'b')
+ylabel('X angle errors in deg')
+grid
+subplot(312)
+plot (time,dy*r2d,'g')
+ylabel('Y angle errors in deg')
+grid
+subplot(313)
+plot (time,dz*r2d,'r')
+xlabel('Time in seconds')
+ylabel('Z angle errors in deg')
+grid
+%
+figure (5)
+subplot(311)
+plot(time(n1:n2),(bgx_h(n1:n2) - wbxm(n1:n2))*r2d)
+ylabel('X gyro bias err in deg','FontSize',8)
+grid
+subplot(312)
+plot(time(n1:n2),(bgy_h(n1:n2) - wbym(n1:n2))*r2d)
+ylabel('Y gyro bias err in deg','FontSize',8)
+grid
+subplot(313)
+plot(time(n1:n2),(bgz_h(n1:n2) - wbzm(n1:n2))*r2d)
+ylabel('Z gyro bias err in deg','FontSize',8)
+grid
+xlabel('Time in sec')
+%
