@@ -20,7 +20,8 @@ if simul_nlos == 1
     end
 
 else
-    lamda = 0.15;
+%     lamda = 0.15;
+    lamda = 1;
 end
 
 Q_z0(1:3,1:3) = lamda*[sig_bx^2 0 0 

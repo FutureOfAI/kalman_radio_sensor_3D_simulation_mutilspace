@@ -29,16 +29,16 @@ wt = 2*pi*ft;
 % =====================================================
 xr1 = 0;% in meter
 yr1 = 25;% in meter
-zr1 = 31;% in meter
+zr1 = 0;% in meter
 xr2 = 0;
 yr2 = -25;
-zr2 = 31;
+zr2 = 0;
 xr3 = 25;% in meter
 yr3 = 0;% in meter
-zr3 = 29;
+zr3 = 31;
 xr4 = -25;
-yr4 = 1;
-zr4 = 29;% in meter
+yr4 = 0;
+zr4 = 31;% in meter
 
 H = [xr2-xr1, yr2-yr1, zr2-zr1
     xr3-xr1, yr3-yr1, zr3-zr1
@@ -93,4 +93,12 @@ plot(1:n, plot_E_dp(2,1:n));
 subplot(313)
 plot(1:n, plot_E_dp(3,1:n));
 
+figure (3)
+% subplot(311)
+plot3(x_p_N,y_p_N,z_p_N,xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
+% plot3(x_p_N,y_p_N,z_p_N)
+% plot3(xpm_Nh(500:3991),ypm_Nh(500:3991),zpm_Nh(500:3991),'b-',xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
+xlabel('X position in m')
+ylabel('Y position in m')
+grid
 

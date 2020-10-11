@@ -37,6 +37,7 @@ if simul_nlos == 1
 
 else
     lamda = 0.001;
+%     lamda = 1;
 end
  
 R = lamda*[sig_x_r^2 0 0 0

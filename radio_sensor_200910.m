@@ -43,16 +43,16 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
 % =====================================================
         xr1 = 0;% in meter
         yr1 = 25;% in meter
-        zr1 = 30;% in meter
+        zr1 = 0;% in meter
         xr2 = 0;
         yr2 = -25;
-        zr2 = 30;
+        zr2 = 0;
         xr3 = 25;% in meter
         yr3 = 0;% in meter
-        zr3 = 0;
+        zr3 = 25;
         xr4 = -25;
         yr4 = 0;
-        zr4 = 0;% in meter
+        zr4 = 25;% in meter
 % ================================
 % Set the simulation run time
 % ================================
@@ -500,6 +500,7 @@ s6_H(1,1) = 1;
 s6_H(2,2) = 1;
 s6_H(3,3) = 1;
 
+% 350 @@
 s6_R = 350*[(1.5*d2r)^2 0 0                     % TRIAD attitude determination error in x - axis
     0 (1.5*d2r)^2 0                           % TRIAD attitude determination error in y - axis
     0 0 (1.5*d2r)^2];                         % TRIAD attitude determination error in z - axis
@@ -508,7 +509,8 @@ s6_Q_z=zeros(6);
 s6_Q_z0(1:3,1:3) = [sig_x_arw^2 0 0 
                     0 sig_y_arw^2 0 
                     0 0 sig_z_arw^2]; 
-s6_Q_z(1:3,1:3) = 0.21*s6_Q_z0;
+                % 0.21 @@
+s6_Q_z(1:3,1:3) = 1*s6_Q_z0;
 s6_Q_z(4,4) = 1*sig_x_rrw^2;
 s6_Q_z(5,5) = 1*sig_y_rrw^2;
 s6_Q_z(6,6) = 1*sig_z_rrw^2;
@@ -687,10 +689,16 @@ end                     % end of one Monte Caro run
 
 %
 n1 = 0.5*(k-1);
+% n1 = 500;
 n2 = k-1;
 
+[(bx0-bx_h(n2))/g (by0-by_h(n2))/g (bz0-bz_h(n2))/g],
 [(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d],
-[mean(x_err(n1:n2)) mean(y_err(n1:n2)) mean(z_err(n1:n2))],
-[std(x_err(n1:n2)) std(y_err(n1:n2)) std(z_err(n1:n2))],
+A = [mean(dq11(n1:n2)*r2d) mean(dq21(n1:n2)*r2d) mean(dq31(n1:n2)*r2d)],
+B = [std(dq11(n1:n2)*r2d) std(dq21(n1:n2)*r2d) std(dq31(n1:n2)*r2d)],
+A+3*B
+C = [mean(x_err(n1:n2)) mean(y_err(n1:n2)) mean(z_err(n1:n2))],
+D = [std(x_err(n1:n2)) std(y_err(n1:n2)) std(z_err(n1:n2))],
+C+3*D
 paperplot;
 plot58;

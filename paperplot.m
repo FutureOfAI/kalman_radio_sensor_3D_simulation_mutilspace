@@ -1,4 +1,4 @@
-xxx1 = 400;
+xxx1 = 50;
 xxx2 = 2000;
 % xxx1 = n1;
 % xxx2 = n2;
@@ -28,17 +28,18 @@ xxx2 = 2000;
 %
 figure (3)
 subplot(311)
-plot(time(xxx1:xxx2),dq11(xxx1:xxx2)*r2d)
-xlabel('Time in sec')
-ylabel('X angle error in deg','FontSize',8)
+plot(time(xxx1:xxx2),dq11(xxx1:xxx2)*r2d,'linewidth',2)
+xlabel('Time in seconds','FontSize',14)
+ylabel('X-Axis','FontSize',14)
+title('Angle error in deg','FontSize',18)
 subplot(312)
-plot(time(xxx1:xxx2),dq21(xxx1:xxx2)*r2d)
-xlabel('Time in sec')
-ylabel('Y angle error in deg','FontSize',8)
+plot(time(xxx1:xxx2),dq21(xxx1:xxx2)*r2d,'linewidth',2)
+xlabel('Time in seconds','FontSize',14)
+ylabel('Y-Axis','FontSize',14)
 subplot(313)
-plot(time(xxx1:xxx2),dq31(xxx1:xxx2)*r2d)
-xlabel('Time in sec')
-ylabel('Z angle error in deg','FontSize',8)
+plot(time(xxx1:xxx2),dq31(xxx1:xxx2)*r2d,'linewidth',2)
+xlabel('Time in seconds','FontSize',14)
+ylabel('Z-Axis','FontSize',14)
 grid
 %
 figure (17)
@@ -53,12 +54,22 @@ ylabel('Z position in m')
 % axis([-30 30 -30 30])
 figure (16)
 % subplot(311)
-plot3(x_p_N,y_p_N,z_p_N,xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
+plot3(x_p_N,y_p_N,z_p_N,xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*','linewidth',3)
 % plot3(x_p_N,y_p_N,z_p_N)
 % plot3(xpm_Nh(500:3991),ypm_Nh(500:3991),zpm_Nh(500:3991),'b-',xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
-xlabel('X position in m')
-ylabel('Y position in m')
+xlabel('X position in m','FontSize',18)
+ylabel('Y position in m','FontSize',18)
+zlabel('Z position in m','FontSize',18)
+text(-30,0,500,'\fontsize{20}\color{black}Screw motion')
 grid
+figure (19)
+plotcube([50 50 25],[-25 -25 0],.1,[0 0 1]);
+hold on
+plot3(xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*','linewidth',3)
+xlabel('X position in m','FontSize',18)
+ylabel('Y position in m','FontSize',18)
+zlabel('Z position in m','FontSize',18)
+text(-40,0,40,'\fontsize{20}\color{black}Anchors distribution')
 % axis([-20 20 -20 20 -20 20])
 % grid
 % subplot(312)
@@ -110,12 +121,13 @@ plot(t0(n1:n2),bz_h(n1:n2)/g,'g-')
 ylabel('Z Accel bias in g')
 %
 figure(7);
-subplot(3,1,1), plot(t0(xxx1:xxx2),(bx(xxx1:xxx2)-bx_h(xxx1:xxx2))/g);         
-xlabel('Time in seconds');ylabel('X accel bias err in g','FontSize',8);
-subplot(3,1,2), plot(t0(xxx1:xxx2),(by(xxx1:xxx2)-by_h(xxx1:xxx2))/g);         
-xlabel('Time in seconds');ylabel('Y accel bias err in g','FontSize',8);
-subplot(3,1,3), plot(t0(xxx1:xxx2),(bz(xxx1:xxx2)-bz_h(xxx1:xxx2))/g);
-xlabel('Time in seconds');ylabel('Z accel bias err in g','FontSize',8);
+subplot(3,1,1), plot(t0(xxx1:xxx2),(bx(xxx1:xxx2)-bx_h(xxx1:xxx2))/g,'red','linewidth',2);         
+xlabel('Time in seconds','FontSize',14);ylabel('X-Axis','FontSize',14);
+title('Accel bias err in g','FontSize',18);
+subplot(3,1,2), plot(t0(xxx1:xxx2),(by(xxx1:xxx2)-by_h(xxx1:xxx2))/g,'red','linewidth',2);         
+xlabel('Time in seconds','FontSize',14);ylabel('Y-Axis','FontSize',14);
+subplot(3,1,3), plot(t0(xxx1:xxx2),(bz(xxx1:xxx2)-bz_h(xxx1:xxx2))/g,'red','linewidth',2);
+xlabel('Time in seconds','FontSize',14);ylabel('Z-Axis','FontSize',14);
 %
 figure (6)
 subplot(3,1,1), plot(t0,(bx-bx_h)/g,'r');         
