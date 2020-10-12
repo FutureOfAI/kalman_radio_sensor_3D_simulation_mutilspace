@@ -176,9 +176,9 @@ end
     % =================================================================
     gyro_err_flag = 1;                        % Flag to set up the gyro errors
     gyro_bias_flag = 1;
-    bgx0=gyro_bias_flag*0.5*d2r;                            % initial gyro bias in rad/sec
-    bgy0=gyro_bias_flag*(-0.5)*d2r;                            % initial gyro bias in rad/sec
-    bgz0=gyro_bias_flag*0.5*d2r;                            % initial gyro bias in rad/sec
+    bgx0=gyro_bias_flag*0.01*d2r;                            % initial gyro bias in rad/sec
+    bgy0=gyro_bias_flag*(-0.01)*d2r;                            % initial gyro bias in rad/sec
+    bgz0=gyro_bias_flag*0.01*d2r;                            % initial gyro bias in rad/sec
     %=============================================================================================================
     % gyroscope(bias & noise)
     %=====================================
