@@ -67,7 +67,7 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
         apha_0 = 1*45*d2r;
         ft =1*0.01;
         wt = 2*pi*ft;
-        radius = 1*25;
+        radius = 1*5;
   %      T = 1;
         delta_t = dt;                                  % delta time for simulating the true dynamics = 0.01 sec
         delta_s = 5*delta_t;                           % sampling at every 0.5 second for the Kalman filter
