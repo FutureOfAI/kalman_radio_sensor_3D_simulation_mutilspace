@@ -93,6 +93,22 @@ plot(t0(xxx1:xxx2),z_err(xxx1:xxx2),'linewidth',2)
 xlabel('Time in seconds','FontSize',14)
 ylabel('Z-Axis','FontSize',14)
 grid
+figure (20)
+subplot(311)
+plot(t0(1000:1500),x_err(1000:1500),'linewidth',2)
+xlabel('Time in seconds','FontSize',14)
+ylabel('X-Axis','FontSize',14)
+title('Position err in meter','FontSize',18);
+subplot(312)
+plot(t0(1000:1500),y_err(1000:1500),'linewidth',2)
+xlabel('Time in seconds','FontSize',14)
+ylabel('Y-Axis','FontSize',14)
+subplot(313)
+plot(t0(1000:1500),z_err(1000:1500),'linewidth',2)
+xlabel('Time in seconds','FontSize',14)
+ylabel('Z-Axis','FontSize',14)
+grid
+
 % figure (5)
 % subplot(311)
 % plot(t0(500:3991),xpm_Nh(500:3991))

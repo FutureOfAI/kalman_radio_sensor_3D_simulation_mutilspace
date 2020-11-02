@@ -35,10 +35,10 @@ yr2 = -25;
 zr2 = 0;
 xr3 = 25;% in meter
 yr3 = 0;% in meter
-zr3 = 31;
+zr3 = 25;
 xr4 = -25;
 yr4 = 0;
-zr4 = 31;% in meter
+zr4 = 25;% in meter
 
 H = [xr2-xr1, yr2-yr1, zr2-zr1
     xr3-xr1, yr3-yr1, zr3-zr1
@@ -81,17 +81,27 @@ for k=1:n
    plot_E_dp(3,k) =  E_dp(3,3,k);
 end
 
+[mean(plot_E_dp(1,:)) mean(plot_E_dp(2,:)) mean(plot_E_dp(3,:))],
+
 figure(1)
 plot(1:n, delta_P(3,1:n));
 ylabel('z-axis positioning error in m')
 
 figure(2)
 subplot(311)
-plot(1:n, plot_E_dp(1,1:n));
+plot(1:n, plot_E_dp(1,1:n),'linewidth',2);
+xlabel('Sample rate in 10Hz','FontSize',14)
+ylabel('a-11','FontSize',14)
+title('Position error covariance diagonal in m^2','FontSize',18)
 subplot(312)
-plot(1:n, plot_E_dp(2,1:n));
+plot(1:n, plot_E_dp(2,1:n),'linewidth',2);
+xlabel('Sample rate in 10Hz','FontSize',14)
+ylabel('a-22','FontSize',14)
 subplot(313)
-plot(1:n, plot_E_dp(3,1:n));
+plot(1:n, plot_E_dp(3,1:n),'linewidth',2);
+xlabel('Sample rate in 10Hz','FontSize',14)
+ylabel('a-33','FontSize',14)
+
 
 figure (3)
 % subplot(311)
@@ -102,3 +112,18 @@ xlabel('X position in m')
 ylabel('Y position in m')
 grid
 
+anchp = [xr1 yr1 zr1
+        xr3 yr3 zr3
+        xr2 yr2 zr2
+        xr4 yr4 zr4
+        xr1 yr1 zr1];
+
+figure (4)
+plotcube([50 50 25],[-25 -25 0],.1,[0 0 1]);
+hold on
+% plot3(xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*','linewidth',2)
+plot3(anchp(:,1),anchp(:,2),anchp(:,3),'r--*','linewidth',2);
+xlabel('X position in m','FontSize',18)
+ylabel('Y position in m','FontSize',18)
+zlabel('Z position in m','FontSize',18)
+text(-40,0,40,'\fontsize{20}\color{black}Anchors distribution')

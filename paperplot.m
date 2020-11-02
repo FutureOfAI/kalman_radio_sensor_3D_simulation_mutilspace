@@ -42,16 +42,16 @@ xlabel('Time in seconds','FontSize',14)
 ylabel('Z-Axis','FontSize',14)
 grid
 %
-figure (17)
-plot(x_p_N,y_p_N,'b',xr1,yr1,'r*',xr2,yr2,'r*',xr3,yr3,'r*',xr4,yr4,'r*');
-xlabel('X position in m')
-ylabel('Y position in m')
-axis([-30 30 -30 30])
-figure (18)
-plot(x_p_N,z_p_N,'b',xr1,zr1,'r*',xr2,zr2,'r*',xr3,zr3,'r*',xr4,zr4,'r*');
-xlabel('X position in m')
-ylabel('Z position in m')
+% figure (17)
+% plot(x_p_N,y_p_N,'b',xr1,yr1,'r*',xr2,yr2,'r*',xr3,yr3,'r*',xr4,yr4,'r*');
+% xlabel('X position in m')
+% ylabel('Y position in m')
 % axis([-30 30 -30 30])
+% figure (18)
+% plot(x_p_N,z_p_N,'b',xr1,zr1,'r*',xr2,zr2,'r*',xr3,zr3,'r*',xr4,zr4,'r*');
+% xlabel('X position in m')
+% ylabel('Z position in m')
+% % axis([-30 30 -30 30])
 figure (16)
 % subplot(311)
 plot3(x_p_N,y_p_N,z_p_N,xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*','linewidth',3)
@@ -72,18 +72,17 @@ zlabel('Z position in m','FontSize',18)
 text(-40,0,40,'\fontsize{20}\color{black}Anchors distribution')
 % axis([-20 20 -20 20 -20 20])
 % grid
-% subplot(312)
-% plot(t00,x_v_N,'r.',t00,y_v_N,'g-',t00,z_v_N,'b')
-% xlabel('Time in sec')
-% ylabel('Velocity in m/s')
-% grid
-% subplot(313)
-% plot(t0,x_a_N/g,'r.',t0,y_a_N/g,'g-',t0,z_a_N/g,'b')
-% ylabel('X-Y-Z sensor accel in g in N-frame')
-% xlabel('Time in sec')
-% % axis([t0(1) t0(k-1) -1 1 -1 1])
-% grid
-%
+figure (21)
+subplot(211)
+plot(t00,x_v_N,'r.',t00,y_v_N,'g-',t00,z_v_N,'b')
+xlabel('Time in sec')
+ylabel('Velocity in m/s')
+subplot(212)
+plot(t0,x_a_N/g,'r.',t0,y_a_N/g,'g-',t0,z_a_N/g,'b')
+ylabel('X-Y-Z sensor accel in g in N-frame')
+xlabel('Time in sec')
+% axis([t0(1) t0(k-1) -1 1 -1 1])
+
 % figure (8)
 % subplot(311)
 % plot(t00,acc(1,1:3991),'b')
@@ -139,4 +138,18 @@ grid
 subplot(3,1,3), plot(t0,(bz-bz_h)/g,'r');         
 xlabel('Time in seconds');ylabel('Accel bias err in z-axis in g');
 grid
+% 
+figure (22)
+subplot(311)
+plot(t0(n1:n2),eulersave(1,n1:n2)*r2d,'b')
+%xlabel('Time in sec')
+ylabel('Roll in deg')
+subplot(312)
+plot(t0(n1:n2),eulersave(2,n1:n2)*r2d,'b')
+%xlabel('Time in sec')
+ylabel('Pitch in deg')
+subplot(313)
+plot(t0(n1:n2),eulersave(3,n1:n2)*r2d,'b')
+%xlabel('Time in sec')
+ylabel('Yaw in deg')
 %

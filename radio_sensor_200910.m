@@ -67,7 +67,7 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
         apha_0 = 1*45*d2r;
         ft =1*0.01;
         wt = 2*pi*ft;
-        radius = 1*5;
+        radius = 1*25;
   %      T = 1;
         delta_t = dt;                                  % delta time for simulating the true dynamics = 0.01 sec
         delta_s = 5*delta_t;                           % sampling at every 0.5 second for the Kalman filter
@@ -82,12 +82,12 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
   % ================================================
         phi_0 = 0*1.5*d2r;%x
         theta_0 = -0*1.5*d2r;%y
-        psi_0 = 0*4.5*d2r;%z
+        psi_0 = 1*4.5*d2r;%z
    %     wn = 2*pi*fn*d2r;
         wn = 2*pi*fn;% rad
         wx(1:n) = 0*wn;
         wy(1:n) = 0*wn;
-        wz(1:n) = 1*wn;
+        wz(1:n) = 0*wn;
    % ==================================================================
    % Create other angular motion (such as sinusoidal motion) to try 
    % to improve the bias estimation performance
@@ -110,7 +110,7 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
     % Set motion profile flags
 %     profile_flag = 1;        % straight motion
     profile_flag = 2;         % screw motion
-    % profile_flag = 3;         race track motion
+%     profile_flag = 3;        % circular motion
     %
 if (profile_flag ==1),
     mag_angle = 1.000*d2r;
@@ -138,7 +138,7 @@ if (profile_flag ==1),
 end
 
 if (profile_flag == 2),
-    mag_angle = 1; % 4*pi
+    mag_angle = 1.000; % 4*pi
     for i = 2:n,
 %        phi(i) = phi(i-1) + wxm(i-1)*dt;
 %        theta(i) = theta(i-1) + wym(i-1)*dt;
@@ -149,22 +149,34 @@ if (profile_flag == 2),
 %         phi_N(i) = phi_0*cos(2*pi*fn*(i-1)*dt);
 %         wx(i) = -2*pi*fn*phi_0*sin(2*pi*0.1*fn*(i-1)*dt);
          theta_N(i) = theta_N(i-1) + wy(i-1)*dt;
-%         psi_N(i) = psi_N(i-1) + wz(i-1)*dt;
-         psi_N(i) = mag_angle*sin(2*pi*fz*(i-1)*dt);
-         wz(i) = 2*pi*fz*mag_angle*cos(2*pi*fz*(i-1)*dt);
+         psi_N(i) = psi_N(i-1) + wz(i-1)*dt;
+         t3(i) = mag_angle*sin(2*pi*fz*(i-1)*dt);
+%          wz(i) = 2*pi*fz*mag_angle*cos(2*pi*fz*(i-1)*dt);
     end
 %    wx(1) = 0;
-    wz(1) = 2*pi*fz*mag_angle;
+%     wz(1) = 2*pi*fz*mag_angle;
 % ====================================================
 % Generate platform motion in N-frame
 % ===================================================
-    [x_p_N,x_v_N,x_a_N,y_p_N,y_v_N,y_a_N,z_p_N,z_v_N,z_a_N] = trajectory3d_circle(radius,wn,10*psi_N,mag_angle);
+    [x_p_N,x_v_N,x_a_N,y_p_N,y_v_N,y_a_N,z_p_N,z_v_N,z_a_N] = trajectory3d_circle(radius,wn,10*t3,mag_angle);
+end
+
+if (profile_flag == 3)
+    mag_angle = 2.000;
+    for i = 2:n,
+         phi_N(i) = phi_N(i-1) + wx(i-1)*dt;
+         theta_N(i) = theta_N(i-1) + wy(i-1)*dt;
+         psi_N(i) = psi_N(i-1) + wz(i-1)*dt;
+         t3(i) = mag_angle*sin(2*pi*fz*(i-1)*dt);
+%          wz(i) = 2*pi*fz*mag_angle*cos(2*pi*fz*(i-1)*dt);
+    end
+    [x_p_N,x_v_N,x_a_N,y_p_N,y_v_N,y_a_N,z_p_N,z_v_N,z_a_N] = trajectory2d_circle (radius,t3,wt);%round cycle
 end
 
 % figure (16)
-% % subplot(311)
+% subplot(311)
 % plot3(x_p_N,y_p_N,z_p_N,xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
-% % plot3(x_p_N,y_p_N,z_p_N)
+% plot3(x_p_N,y_p_N,z_p_N)
 % % plot3(xpm_Nh(500:3991),ypm_Nh(500:3991),zpm_Nh(500:3991),'b-',xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
 % xlabel('X position in m')
 % ylabel('Y position in m')
@@ -506,7 +518,7 @@ s6_H(2,2) = 1;
 s6_H(3,3) = 1;
 
 % 350 @@
-s6_R = 350*[(1.5*d2r)^2 0 0                     % TRIAD attitude determination error in x - axis
+s6_R = 1*[(1.5*d2r)^2 0 0                     % TRIAD attitude determination error in x - axis
     0 (1.5*d2r)^2 0                           % TRIAD attitude determination error in y - axis
     0 0 (1.5*d2r)^2];                         % TRIAD attitude determination error in z - axis
 % Define the process noise matrix Q = s6_Q_z associated with the gyro errors
@@ -547,7 +559,7 @@ for i=1:sensor_step
         w_EB_B_xm(k) = w_EB_B_xm(k) - bgx_h(k);
         w_EB_B_ym(k) = w_EB_B_ym(k) - bgy_h(k);
         w_EB_B_zm(k) = w_EB_B_zm(k) - bgz_h(k);
-        % ===========================================
+        % ============================================
         % quaternion propagation algorithm
         % ============================================
         d1 = w_EB_B_xm(k)*dt/2;
@@ -575,6 +587,8 @@ for i=1:sensor_step
     % Compute the attitude errors
         inv_QE_B_m = - QE_B_m;
         inv_QE_B_m(4,1) = QE_B_m(4,1);
+        Qtmp = [inv_QE_B_m(4) inv_QE_B_m(1) inv_QE_B_m(2) inv_QE_B_m(3)];
+        eulersave(:,k) = quatern2euler(Qtmp);        
         dQ1 = qmult(Q_E_B(:,k),inv_QE_B_m);
     %    dQ1 = qmult(inv_QE_B_m,QE_B);
         dq11(k) = 2*dQ1(1,1);
@@ -590,7 +604,7 @@ for i=1:sensor_step
 % ===========================================================
 % Perform Kalman filter propagation for 9-state Kalman filter
 % ===========================================================
-        [phi_z,Q_z,F_z]=define_Dymamic_equation9_radio(F_z,Q_z,sig_bx,sig_by,sig_bz,sig_xr,sig_yr,sig_zr,DC_E_B_m,k,dt,simul_nlos);
+        [phi_z,Q_z,F_z]=define_Dymamic_equation9_radio_v2(F_z,Q_z,sig_bx,sig_by,sig_bz,sig_xr,sig_yr,sig_zr,DC_E_B_m,k,dt,axm,aym,azm,dq11(k),dq21(k),dq31(k),simul_nlos);
         [xz_h,P00_z]=Kalman_Filter_estimate1_radio(xz_h,phi_z,P00_z,Q_z,dt);
 % ===========================================================
 % Perform Kalman filter propagation for 6-state Kalman filter
@@ -680,6 +694,8 @@ k1 = k1 + 1;
 % Update the attitude errors
     inv_QE_B_m = -QE_B_m;
     inv_QE_B_m(4,1) = QE_B_m(4,1);
+    Qtmp = [inv_QE_B_m(4) inv_QE_B_m(1) inv_QE_B_m(2) inv_QE_B_m(3)];
+    eulersave(:,k) = quatern2euler(Qtmp);
     dQ1 = qmult(Q_E_B(:,k),inv_QE_B_m);
 %    dQ1 = qmult(inv_QE_B_m,QE_B);
     dq11(k) = 2*dQ1(1,1);
@@ -699,11 +715,22 @@ n2 = k-1;
 
 [(bx0-bx_h(n2))/g (by0-by_h(n2))/g (bz0-bz_h(n2))/g],
 [(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d],
-A = [mean(dq11(n1:n2)*r2d) mean(dq21(n1:n2)*r2d) mean(dq31(n1:n2)*r2d)],
-B = [std(dq11(n1:n2)*r2d) std(dq21(n1:n2)*r2d) std(dq31(n1:n2)*r2d)],
-A+3*B
-C = [mean(x_err(n1:n2)) mean(y_err(n1:n2)) mean(z_err(n1:n2))],
-D = [std(x_err(n1:n2)) std(y_err(n1:n2)) std(z_err(n1:n2))],
-C+3*D
+% ======================================================
+% Three sigma value computations
+% ======================================================
+B = [sort(abs(dq11(n1:n2)*r2d)) sort(abs(dq21(n1:n2)*r2d)) sort(abs(dq31(n1:n2)*r2d))];
+N = length(B);
+number = fix(0.9973*N);
+B1 = [B(number,1) B(number,2) B(number,3)]
+
+D = [sort(abs(x_err(n1:n2)')) sort(abs(y_err(n1:n2)')) sort(abs(z_err(n1:n2)'))];
+N = length(D);
+number = fix(0.9973*N);
+D1 = [D(number,1) D(number,2) D(number,3)]
+
+F = [sort(abs(x_err(1000:1500)')) sort(abs(y_err(1000:1500)')) sort(abs(z_err(1000:1500)'))];
+N = length(F);
+number = fix(0.9973*N);
+F1 = [F(number,1) F(number,2) F(number,3)]
 paperplot;
 plot58;

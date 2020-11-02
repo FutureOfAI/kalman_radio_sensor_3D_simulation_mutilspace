@@ -6,7 +6,7 @@ x_a = - radius*wn^2*cos(t);
 y_p = radius*sin(t);
 y_v = radius*wn*cos(t);
 y_a = - radius*wn^2*sin(t);
-z_p = radius*t/amp;
-z_v = 2*radius;
+z_p = radius*t/2+4*radius;
+z_v = radius/2;
 z_a = 0*t;
 end

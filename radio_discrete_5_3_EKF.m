@@ -30,14 +30,14 @@ H = [r1_partial_x r1_partial_y r1_partial_z 0 0 0 0 0 0
 if simul_nlos == 1 
  
     if k>1000 && k<1500
-        lamda =  0.4;
+        lamda =  350; %0.4
     else
         lamda = 1;
     end
 
 else
-    lamda = 0.001;
-%     lamda = 1;
+%     lamda = 0.001; % 0.001
+    lamda = 1;
 end
  
 R = lamda*[sig_x_r^2 0 0 0
