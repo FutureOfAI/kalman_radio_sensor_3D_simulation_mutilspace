@@ -527,7 +527,7 @@ s6_Q_z0(1:3,1:3) = [sig_x_arw^2 0 0
                     0 sig_y_arw^2 0 
                     0 0 sig_z_arw^2]; 
                 % 0.21 @@
-s6_Q_z(1:3,1:3) = 1*s6_Q_z0;
+s6_Q_z(1:3,1:3) = 0.01*s6_Q_z0;
 s6_Q_z(4,4) = 1*sig_x_rrw^2;
 s6_Q_z(5,5) = 1*sig_y_rrw^2;
 s6_Q_z(6,6) = 1*sig_z_rrw^2;
@@ -714,7 +714,7 @@ n1 = 0.5*(k-1);
 n2 = k-1;
 
 [(bx0-bx_h(n2))/g (by0-by_h(n2))/g (bz0-bz_h(n2))/g],
-[(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d],
+3600*[(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d],
 % ======================================================
 % Three sigma value computations
 % ======================================================
