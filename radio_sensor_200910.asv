@@ -64,10 +64,10 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
         TT2 = 0.5*T;
         TT3 = 0.75*T;
         gama_0 = 1*45*d2r;
-        apha_0 = 1*45*d2r;
+        apha_0 = 2*45*d2r;
         ft =1*0.01;
         wt = 2*pi*ft;
-        radius = 1*5;
+        radius = 1*25;
   %      T = 1;
         delta_t = dt;                                  % delta time for simulating the true dynamics = 0.01 sec
         delta_s = 5*delta_t;                           % sampling at every 0.5 second for the Kalman filter
@@ -108,8 +108,8 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
 % trajectory is generated in navigation frame (N-frame)
 %================================
     % Set motion profile flags
-%     profile_flag = 1;        % straight motion
-    profile_flag = 2;         % screw motion
+    profile_flag = 1;        % straight motion
+%     profile_flag = 2;         % screw motion
 %     profile_flag = 3;        % circular motion
     %
 if (profile_flag ==1),
@@ -518,7 +518,7 @@ s6_H(2,2) = 1;
 s6_H(3,3) = 1;
 
 % 350 @@
-s6_R = 350*[(1.5*d2r)^2 0 0                     % TRIAD attitude determination error in x - axis
+s6_R = 1*[(1.5*d2r)^2 0 0                     % TRIAD attitude determination error in x - axis
     0 (1.5*d2r)^2 0                           % TRIAD attitude determination error in y - axis
     0 0 (1.5*d2r)^2];                         % TRIAD attitude determination error in z - axis
 % Define the process noise matrix Q = s6_Q_z associated with the gyro errors
@@ -527,7 +527,7 @@ s6_Q_z0(1:3,1:3) = [sig_x_arw^2 0 0
                     0 sig_y_arw^2 0 
                     0 0 sig_z_arw^2]; 
                 % 0.21 @@
-s6_Q_z(1:3,1:3) = 1*s6_Q_z0;
+s6_Q_z(1:3,1:3) = 1000*s6_Q_z0;
 s6_Q_z(4,4) = 1*sig_x_rrw^2;
 s6_Q_z(5,5) = 1*sig_y_rrw^2;
 s6_Q_z(6,6) = 1*sig_z_rrw^2;
@@ -604,7 +604,7 @@ for i=1:sensor_step
 % ===========================================================
 % Perform Kalman filter propagation for 9-state Kalman filter
 % ===========================================================
-        [phi_z,Q_z,F_z]=define_Dymamic_equation9_radio(F_z,Q_z,sig_bx,sig_by,sig_bz,sig_xr,sig_yr,sig_zr,DC_E_B_m,k,dt,simul_nlos);
+        [phi_z,Q_z,F_z]=define_Dymamic_equation9_radio_v2(F_z,Q_z,sig_bx,sig_by,sig_bz,sig_xr,sig_yr,sig_zr,DC_E_B_m,k,dt,axm,aym,azm,dq11(k),dq21(k),dq31(k),simul_nlos);
         [xz_h,P00_z]=Kalman_Filter_estimate1_radio(xz_h,phi_z,P00_z,Q_z,dt);
 % ===========================================================
 % Perform Kalman filter propagation for 6-state Kalman filter
@@ -714,7 +714,7 @@ n1 = 0.5*(k-1);
 n2 = k-1;
 
 [(bx0-bx_h(n2))/g (by0-by_h(n2))/g (bz0-bz_h(n2))/g],
-[(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d],
+3600*[(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d],
 % ======================================================
 % Three sigma value computations
 % ======================================================
@@ -723,11 +723,14 @@ N = length(B);
 number = fix(0.9973*N);
 B1 = [B(number,1) B(number,2) B(number,3)]
 
-C = [mean(x_err(n1:n2)) mean(y_err(n1:n2)) mean(z_err(n1:n2))],
-D = [std(x_err(n1:n2)) std(y_err(n1:n2)) std(z_err(n1:n2))],
-abs(C)+3*abs(D)
-E = [mean(x_err(1000:1500)) mean(y_err(1000:1500)) mean(z_err(1000:1500))],
-F = [std(x_err(1000:1500)) std(y_err(1000:1500)) std(z_err(1000:1500))],
-G = abs(E)+3*abs(F)
+D = [sort(abs(x_err(n1:n2)')) sort(abs(y_err(n1:n2)')) sort(abs(z_err(n1:n2)'))];
+N = length(D);
+number = fix(0.9973*N);
+D1 = [D(number,1) D(number,2) D(number,3)]
+
+F = [sort(abs(x_err(1000:1500)')) sort(abs(y_err(1000:1500)')) sort(abs(z_err(1000:1500)'))];
+N = length(F);
+number = fix(0.9973*N);
+F1 = [F(number,1) F(number,2) F(number,3)]
 paperplot;
 plot58;

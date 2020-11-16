@@ -43,7 +43,7 @@ grid
 plot3(xpm_Nh(500:3991),ypm_Nh(500:3991),zpm_Nh(500:3991),'b-',xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
 xlabel('X position in m')
 ylabel('Y position in m')
-axis([-20 20 -20 20 -20 20])
+% axis([-20 20 -20 20 -20 20])
 % grid
 % subplot(312)
 % plot(t00,x_v_N,'r.',t00,y_v_N,'g-',t00,z_v_N,'b')

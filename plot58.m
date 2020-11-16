@@ -1,5 +1,6 @@
 xxx1 = 500;
-xxx2 = 8000;
+% xxx2 = 8000;
+xxx2 = 3900;
 % %
 % figure (11)
 % subplot(311)

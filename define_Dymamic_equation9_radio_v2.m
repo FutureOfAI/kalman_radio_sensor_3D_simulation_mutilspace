@@ -39,12 +39,16 @@ tmpI(1,1) = 1;
 tmpI(2,2) = 1;
 tmpI(3,3) = 1;
 % test1 = tmpx'*tmpEphi*tmpx;
+scale = zeros(3);
+scale(1,1) = 1000;
+scale(2,2) = 10000;
+scale(3,3) = 1;
 
 Q_z0(1:3,1:3) = lamda*[sig_bx^2 0 0 
     0 sig_by^2 0 
     0 0 sig_bz^2];
 % test2 = DC_E_B_m(:,:,k-1)'*Q_z0*DC_E_B_m(:,:,k-1);
-Q_z(4:6,4:6) = 0.01*DC_E_B_m(:,:,k-1)'*Q_z0*DC_E_B_m(:,:,k-1) + tmpx'*tmpEphi*tmpx; %tmpI
+Q_z(4:6,4:6) = 0.01*DC_E_B_m(:,:,k-1)'*Q_z0*DC_E_B_m(:,:,k-1) + 1*tmpx'*tmpEphi*tmpx; %tmpI
 Q_z(7,7) = sig_xr^2;
 Q_z(8,8) = sig_yr^2;
 Q_z(9,9) = sig_zr^2;

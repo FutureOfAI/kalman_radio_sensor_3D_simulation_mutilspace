@@ -370,7 +370,7 @@ radiosensor_err_factor = 1.0;
 sig_x_r=radiosensor_err_factor*0.1;              % radio sensor measurement noise in meters x-direction
 sig_y_r=radiosensor_err_factor*0.1;              % radio sensor measurement noise in meters y-direction
 %======================================================================================
-[R1m,R2m,R3m,R4m,nvx_r,nvy_r] = radio_sensor3d_m_4(xr1,yr1,zr1,xr2,yr2,zr2,xr3,yr3,zr3,xr4,yr4,zr4,x_p_N,y_p_N,z_p_N,sig_x_r,sig_y_r,n,m);%4 four radio sensors
+[R1m,R2m,R3m,R4m,nvx_r,nvy_r] = radio_sensor3d_m_4(xr1,yr1,zr1,xr2,yr2,zr2,xr3,yr3,zr3,xr4,yr4,zr4,x_p_N,y_p_N,z_p_N,sig_x_r,sig_y_r,n,m,0);%4 four radio sensors
 %================================================================
 [sensor_step,propagation_step]=propagate_step(T,delta_t,delta_s);
 %================================================================
@@ -556,7 +556,7 @@ for i=1:sensor_step
 % ===========================================================
 % Perform Kalman filter propagation for 9-state Kalman filter
 % ===========================================================
-        [phi_z,Q_z,F_z]=define_Dymamic_equation9_radio(F_z,Q_z,sig_bx,sig_by,sig_bz,sig_xr,sig_yr,sig_zr,DC_E_B_m,k,dt);
+        [phi_z,Q_z,F_z]=define_Dymamic_equation9_radio(F_z,Q_z,sig_bx,sig_by,sig_bz,sig_xr,sig_yr,sig_zr,DC_E_B_m,k,dt,0);
         [xz_h,P00_z]=Kalman_Filter_estimate1_radio(xz_h,phi_z,P00_z,Q_z,dt);
 % ===========================================================
 % Perform Kalman filter propagation for 6-state Kalman filter
@@ -583,7 +583,7 @@ for i=1:sensor_step
 % =======================================================
 % xpm_Nh,ypm_Nh,zpm_Nh use least squre position, converge will be more
 % quickly @@
-    [H,R,R1m_h,R2m_h,R3m_h,R4m_h]=radio_discrete_5_3_EKF(xr1,yr1,zr1,xr2,yr2,zr2,xr3,yr3,zr3,xr4,yr4,zr4,xpm_Nh,ypm_Nh,zpm_Nh,sig_x_r,sig_y_r,k);
+    [H,R,R1m_h,R2m_h,R3m_h,R4m_h]=radio_discrete_5_3_EKF(xr1,yr1,zr1,xr2,yr2,zr2,xr3,yr3,zr3,xr4,yr4,zr4,xpm_Nh,ypm_Nh,zpm_Nh,sig_x_r,sig_y_r,k,0);
 %   
 %     [P00_z,K_z,z_update,Mu_z]=Kalman_Filter_update_5_3_radio(P00_z,R1m,R2m,R3m,R4m,H,R,R1m_h,R2m_h,R3m_h,R4m_h,k);
 %     [P00_z,K_z,z_update,Mu_z]=Kalman_Filter_update_5_3_radio(P00_z,pos(1,:)',pos(2,:)',pos(3,:)',pos(4,:)',H,R,R1m_h,R2m_h,R3m_h,R4m_h,k);% experiment data @@
