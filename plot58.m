@@ -18,8 +18,8 @@ xxx2 = 3900;
 %
 figure (8)
 plot3(xpm_Nh(500:3991),ypm_Nh(500:3991),zpm_Nh(500:3991),'b.',xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
-xlabel('X position in m')
-ylabel('Y position in m')
+xlabel('X position in m','FontSize',14)
+ylabel('Y position in m','FontSize',14)
 % axis([-15 15 -15 15])
 grid
 % %
@@ -53,13 +53,18 @@ grid
 %
 figure (14)
 subplot(311)
-plot(t00,(bgx0-bgx_h)*r2d,'r')
-ylabel('X gyro bias err in deg/sec')
+plot(t0(n1:n2),bgx_h(n1:n2)*r2d,'red','linewidth',2)
+xlabel('Time in seconds','FontSize',14)
+ylabel('X-Axis','FontSize',14)
+title('Gyro bias in deg/s','FontSize',18);
 subplot(312)
-plot(t00,(bgy0-bgy_h)*r2d,'b')
+plot(t0(n1:n2),bgy_h(n1:n2)*r2d,'red','linewidth',2)
+ylabel('Y-Axis','FontSize',14)
+xlabel('Time in seconds','FontSize',14)
 subplot(313)
-plot(t00,(bgz0-bgz_h)*r2d,'g')
-ylabel('Z gyro bias err in deg/sec')
+plot(t0(n1:n2),bgz_h(n1:n2)*r2d,'red','linewidth',2)
+ylabel('Z-Axis','FontSize',14)
+xlabel('Time in seconds','FontSize',14)
 %
 figure (15)
 subplot(311)
@@ -110,15 +115,17 @@ xlabel('Time in seconds','FontSize',14)
 ylabel('Z-Axis','FontSize',14)
 grid
 
-% figure (5)
-% subplot(311)
-% plot(t0(500:3991),xpm_Nh(500:3991))
-% ylabel('X position in meter')
-% subplot(312)
-% plot(t0(500:3991),ypm_Nh(500:3991))
-% ylabel('Y position in meter')
-% % xlabel('Time in seconds')
-% subplot(313)
-% plot(t0(500:3991),zpm_Nh(500:3991)) % exp data is 1.32m
-% ylabel('Z position in meter')
-% xlabel('Time in seconds')
+figure (21)
+subplot(311)
+plot(t0(500:3991),xpm_Nh(500:3991),'linewidth',2)
+xlabel('Time in seconds','FontSize',14)
+ylabel('X-Axis','FontSize',14)
+title('Position in meter','FontSize',18);
+subplot(312)
+plot(t0(500:3991),ypm_Nh(500:3991),'linewidth',2)
+xlabel('Time in seconds','FontSize',14)
+ylabel('Y-Axis','FontSize',14)
+subplot(313)
+plot(t0(500:3991),zpm_Nh(500:3991),'linewidth',2) % exp data is 1.32m
+xlabel('Time in seconds','FontSize',14)
+ylabel('Z-Axis','FontSize',14)

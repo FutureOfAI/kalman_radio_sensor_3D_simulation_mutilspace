@@ -430,7 +430,7 @@ dtheda_y = 0*theta_0;
 dtheda_z = 0*psi_0;
 phierr = 1*1.5;       % x in deg
 thetaerr = -1*1.5;     % y in deg
-psierr = 1*5.0;       % z in deg
+psierr = 1*1.5;       % z in deg
 [dtheda_xh,dtheda_yh,dtheda_zh,bgx_h,bgy_h,bgz_h]=initial_estimate_value6_radio(m,dtheda_x,dtheda_y,dtheda_z,phierr,thetaerr,psierr,d2r);
 dq11 = zeros(n,1);
 dq21 = zeros(n,1);
@@ -476,7 +476,7 @@ s6_Q_z=zeros(6);
 s6_Q_z0(1:3,1:3) = [sig_x_arw^2 0 0 
                     0 sig_y_arw^2 0 
                     0 0 sig_z_arw^2]; 
-s6_Q_z(1:3,1:3) = s6_Q_z0;
+s6_Q_z(1:3,1:3) = 0.01*s6_Q_z0;
 s6_Q_z(4,4) = sig_x_rrw^2;
 s6_Q_z(5,5) = sig_y_rrw^2;
 s6_Q_z(6,6) = sig_z_rrw^2;
@@ -543,6 +543,8 @@ for i=1:sensor_step
 % Compute the attitude errors @@
     inv_QE_B_m = - QE_B_m;
     inv_QE_B_m(4,1) = QE_B_m(4,1);
+    Qtmp = [inv_QE_B_m(4) inv_QE_B_m(1) inv_QE_B_m(2) inv_QE_B_m(3)];
+    eulersave(:,k) = quatern2euler(Qtmp); 
     dQ1 = qmult(Q_E_B(:,k),inv_QE_B_m);
 %    dQ1 = qmult(inv_QE_B_m,QE_B);
     dq11(k) = 2*dQ1(1,1);
@@ -559,7 +561,7 @@ for i=1:sensor_step
 % ===========================================================
 % Perform Kalman filter propagation for 9-state Kalman filter
 % ===========================================================
-        [phi_z,Q_z,F_z]=define_Dymamic_equation9_radio(F_z,Q_z,sig_bx,sig_by,sig_bz,sig_xr,sig_yr,sig_zr,DC_E_B_m,k,dt,0);
+        [phi_z,Q_z,F_z]=define_Dymamic_equation9_radio_v2(F_z,Q_z,sig_bx,sig_by,sig_bz,sig_xr,sig_yr,sig_zr,DC_E_B_m,k,dt,axm,aym,azm,dq11(k),dq21(k),dq31(k),0);
         [xz_h,P00_z]=Kalman_Filter_estimate1_radio(xz_h,phi_z,P00_z,Q_z,dt);
 % ===========================================================
 % Perform Kalman filter propagation for 6-state Kalman filter
@@ -677,18 +679,20 @@ k1 = k1 + 1;
     dQ2(3,1) = dtheda_zh(k)/2;
     dQ2(4,1) = sqrt(1 - dQ2(1,1)^2 - dQ2(2,1)^2 - dQ2(3,1)^2);
     QE_B_m = qmult(dQ2,QE_B_m);
-%QE_B_m = qmult(QE_B_m,dQ2);
-%
-Q_E_B_m(:,k) = QE_B_m;
-DC_E_B_m(:,:,k) = q2dc(QE_B_m);
-delta_C = CE_B(:,:,k)'*DC_E_B_m(:,:,k);
-dx(k) = delta_C(3,2);
-dy(k) = delta_C(1,3);
-dz(k) = delta_C(2,1);
+    %QE_B_m = qmult(QE_B_m,dQ2);
+    %
+    Q_E_B_m(:,k) = QE_B_m;
+    DC_E_B_m(:,:,k) = q2dc(QE_B_m);
+    delta_C = CE_B(:,:,k)'*DC_E_B_m(:,:,k);
+    dx(k) = delta_C(3,2);
+    dy(k) = delta_C(1,3);
+    dz(k) = delta_C(2,1);
 % ========================================================
 % Update the attitude errors
     inv_QE_B_m = -QE_B_m;
     inv_QE_B_m(4,1) = QE_B_m(4,1);
+    Qtmp = [inv_QE_B_m(4) inv_QE_B_m(1) inv_QE_B_m(2) inv_QE_B_m(3)];
+    eulersave(:,k) = quatern2euler(Qtmp);    
     dQ1 = qmult(Q_E_B(:,k),inv_QE_B_m);
 %    dQ1 = qmult(inv_QE_B_m,QE_B);
     dq11(k) = 2*dQ1(1,1);
@@ -705,9 +709,20 @@ end                     % end of one Monte Caro run
 n1 = 0.5*(k-1);
 n2 = k-1;
 
-[(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d],
-[mean(x_err(n1:n2)) mean(y_err(n1:n2)) mean(z_err(n1:n2))],
-[std(x_err(n1:n2)) std(y_err(n1:n2)) std(z_err(n1:n2))],
+[(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d];
+[mean(x_err(n1:n2)) mean(y_err(n1:n2)) mean(z_err(n1:n2))];
+[std(x_err(n1:n2)) std(y_err(n1:n2)) std(z_err(n1:n2))];
+
+B = [sort(abs(eulersave(1,n1:n2)'*r2d)) sort(abs(eulersave(2,n1:n2)'*r2d)) sort(abs(eulersave(3,n1:n2)'*r2d))];
+N = length(B);
+number = fix(0.9973*N);
+B1 = [B(number,1) B(number,2) B(number,3)]
+
+D = [sort(abs(xpm_Nh(n1:n2))) sort(abs(ypm_Nh(n1:n2))) sort(abs(zpm_Nh(n1:n2)))];
+N = length(D);
+number = fix(0.9973*N);
+D1 = [D(number,1) D(number,2) D(number,3)]
+
 % plot53_v4;
 plot53;
 plot58;

@@ -30,7 +30,7 @@ H = [r1_partial_x r1_partial_y r1_partial_z 0 0 0 0 0 0
 if simul_nlos == 1 
  
     if k>1000 && k<1500
-        lamda =  350; %0.4
+        lamda =  1; %0.4 350
     else
         lamda = 1;
     end

@@ -64,10 +64,10 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
         TT2 = 0.5*T;
         TT3 = 0.75*T;
         gama_0 = 1*45*d2r;
-        apha_0 = 2*45*d2r;
+        apha_0 = 1*45*d2r;
         ft =1*0.01;
         wt = 2*pi*ft;
-        radius = 1*25;
+        radius = 1*10;
   %      T = 1;
         delta_t = dt;                                  % delta time for simulating the true dynamics = 0.01 sec
         delta_s = 5*delta_t;                           % sampling at every 0.5 second for the Kalman filter
@@ -108,8 +108,8 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
 % trajectory is generated in navigation frame (N-frame)
 %================================
     % Set motion profile flags
-%     profile_flag = 1;        % straight motion
-    profile_flag = 2;         % screw motion
+    profile_flag = 1;        % straight motion
+%     profile_flag = 2;         % screw motion
 %     profile_flag = 3;        % circular motion
     %
 if (profile_flag ==1),

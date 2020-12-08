@@ -4,8 +4,8 @@
 % clc;
 % load('3D_BOARD_TILTED.mat');
 % load('3D_BOARD_HORILZON.mat');
-% load('aj_static_16.mat');
-load('multisapce_3D_data_180715.mat');
+load('aj_static_16.mat');
+% load('multisapce_3D_data_180715.mat');
 % load('straight line 40s.mat');
 d2r = (pi/180);
 
@@ -32,7 +32,7 @@ declinationAngle = (4.0 - (31.0 / 60.0)) / (180 / pi);
 for j_1=1:count_for
     for i_1=1:32 
         %%
-        if data(i_1,j_1) == 11
+        if data(i_1,j_1) == 17 %11
             if i_1+10 <= 32 && data(i_1+10,j_1) == 128
                 if rem(sum( data(i_1:(i_1+8),j_1) ),256) == data(i_1+9,j_1)
                     data_new(1:11,distance_cnt) = data(i_1:(i_1+10),j_1);
