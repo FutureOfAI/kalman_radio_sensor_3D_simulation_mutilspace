@@ -70,7 +70,7 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
         radius = 1*10;
   %      T = 1;
         delta_t = dt;                                  % delta time for simulating the true dynamics = 0.01 sec
-        delta_s = 5*delta_t;                           % sampling at every 0.5 second for the Kalman filter
+        delta_s = 10*delta_t;                           % sampling at every 0.5 second for the Kalman filter
         err_flag = 1;                                   % flag for turning on the magnetometer and accelerometer errors
         err_flag_g = 1;                                 % flag for turning in the gyro noises
   % ================================================
