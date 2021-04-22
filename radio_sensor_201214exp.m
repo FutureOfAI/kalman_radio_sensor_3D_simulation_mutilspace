@@ -7,7 +7,8 @@ clear all;
 clc;
 format short e
 % practise data array
-dwm_trans_3D_180702;
+% dwm_trans_3D_180702;
+load_exp_data
 % define some constants
 r2d = (180/pi);
 d2r = (pi/180);
@@ -38,21 +39,43 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
 % Define four UWB sensors locations
 % @@ copyright leo
 % =====================================================
+%         xr1 = 0;% in meter
+%         yr1 = 0;% in meter
+%         zr1 = 2.52;% in meter
+%         
+%         xr2 = 5.716;
+%         yr2 = 0;
+%         zr2 = 0.327;
+%         
+%         xr3 = 5.795;% in meter
+%         yr3 = 7.49;% in meter
+%         zr3 = 2.851;
+%         
+%         xr4 = 0.13;
+%         yr4 = 7.49;
+%         zr4 = 0.327;% in meter
+        
         xr1 = 0;% in meter
-        yr1 = 0.9;% in meter
-        zr1 = 2.75;% in meter
+        yr1 = 0;% in meter
+        zr1 = 2.52;% in meter
         
-        xr2 = 0.17;
-        yr2 = 11.8;
-        zr2 = 2.72;
+        xr2 = 5.79;
+        yr2 = 0;
+        zr2 = 2.52;
         
-        xr3 = 7.78;% in meter
-        yr3 = 11.7;% in meter
-        zr3 = 2.5;
+        psi = 70*d2r;
+        xr3 = 5.79*cos(psi);% in meter
+        yr3 = 5.79*sin(psi);% in meter
+        zr3 = 2.52;
         
-        xr4 = 7.65;
-        yr4 = 0.13;
-        zr4 = 2.7;% in meter
+        xr4 = 0.41;
+        yr4 = 0.64;
+        zr4 = 0.464;% in meter  
+%         phi = 65*d2r;
+%         xr4 = 2.056*sin(phi)*sin(45*d2r);
+%         yr4 = 2.056*sin(phi)*cos(45*d2r);
+%         zr4 = 2.52-2.056*cos(phi);
+              
 % ================================
 % Set the simulation run time
 % ================================
@@ -61,7 +84,8 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
         fz = 1*0.005;
         mag_angle = 10.000*d2r;
 %         T = 4*(1/fz);
-        T = 39.9; % experiment data @@  n=T*(1/f)=39.9s/(1/0.01)=3990
+%         T = 39.9; % experiment data @@  n=T*(1/f)=39.9s/(1/0.01)=3990
+        T = 79.9;
         TT1 = T;
         TT2 = 0.5*T;
         TT3 = 0.75*T;
@@ -73,7 +97,7 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
   %      T = 1;
         delta_t = dt;                                  % delta time for simulating the true dynamics = 0.01 sec
 %         delta_s = 5*delta_t;                           % sampling at every 0.5 second for the Kalman filter
-        delta_s = 2*delta_t;  %delta_t is 9-dof sample rate and delta_s is UWB sample rate @@
+        delta_s = 10*delta_t;  %delta_t is 9-dof sample rate and delta_s is UWB sample rate @@
         err_flag = 1;                                   % flag for turning on the magnetometer and accelerometer errors
         err_flag_g = 1;                                 % flag for turning in the gyro noises
   % ================================================
@@ -86,7 +110,7 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
   % initial platform attitude
         phi_0 = 1*1.5*d2r;%x
         theta_0 = -1*1.5*d2r;%y
-        psi_0 = 1*4.5*d2r;%z
+        psi_0 = 1*1.5*d2r;%z
    %     wn = 2*pi*fn*d2r;
         wn = 2*pi*fn;% rad
         wx(1:n) = 0*wn;
@@ -476,7 +500,7 @@ s6_Q_z=zeros(6);
 s6_Q_z0(1:3,1:3) = [sig_x_arw^2 0 0 
                     0 sig_y_arw^2 0 
                     0 0 sig_z_arw^2]; 
-s6_Q_z(1:3,1:3) = 0.01*s6_Q_z0;
+s6_Q_z(1:3,1:3) =100*s6_Q_z0; % 100
 s6_Q_z(4,4) = sig_x_rrw^2;
 s6_Q_z(5,5) = sig_y_rrw^2;
 s6_Q_z(6,6) = sig_z_rrw^2;
@@ -495,6 +519,7 @@ k1 = 1;
 for i=1:sensor_step
 	for j=1:propagation_step
         k=1+j+(i-1)*propagation_step;
+        k = fix(k);
    % accel biases     
         bx_h(k)=bx_h(k-1);
         by_h(k)=by_h(k-1);
@@ -708,6 +733,8 @@ end                     % end of one Monte Caro run
 %
 n1 = 0.5*(k-1);
 n2 = k-1;
+% n1 = 2000;
+% n2 = 5000;
 
 [(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d];
 [mean(x_err(n1:n2)) mean(y_err(n1:n2)) mean(z_err(n1:n2))];
@@ -722,6 +749,13 @@ D = [sort(abs(xpm_Nh(n1:n2))) sort(abs(ypm_Nh(n1:n2))) sort(abs(zpm_Nh(n1:n2)))]
 N = length(D);
 number = fix(0.9973*N);
 D1 = [D(number,1) D(number,2) D(number,3)]
+
+ddx = mean(xpm_Nh(n1:n2)) - 2.47;
+ddy = mean(ypm_Nh(n1:n2)) - 2.81;
+% ddx = mean(xpm_Nh(n1:n2)) - 4.19;
+% ddy = mean(ypm_Nh(n1:n2)) + 2.8;
+ddz = mean(zpm_Nh(n1:n2)) - 0.7;
+pdop = sqrt(ddx^2+ddy^2+ddz^2)
 
 % plot53_v4;
 plot53;

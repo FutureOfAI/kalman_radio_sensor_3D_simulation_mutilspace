@@ -41,18 +41,47 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
 % ======================================================
 % Define four UWB sensors locations
 % =====================================================
-        xr1 = 0;% in meter
-        yr1 = 25;% in meter
-        zr1 = 0;% in meter
-        xr2 = 0;
-        yr2 = -25;
-        zr2 = 0;
-        xr3 = 25;% in meter
-        yr3 = 0;% in meter
-        zr3 = 25;
-        xr4 = -25;
-        yr4 = 0;
-        zr4 = 25;% in meter
+%         xr1 = 0;% in meter
+%         yr1 = 0;% in meter
+%         zr1 = 25;% in meter
+%         xr2 = 25;
+%         yr2 = 0;
+%         zr2 = 25;
+%         xr3 = 25*cos(70*d2r);% in meter
+%         yr3 = 25*sin(70*d2r);% in meter
+%         zr3 = 25;
+%         xr4 = 25*cos(70*d2r)*sin(45*d2r);
+%         yr4 = 25*cos(70*d2r)*cos(45*d2r);
+%         zr4 = 25-25*sin(70*d2r);% in meter
+    xr1 = 0;% in meter
+    yr1 = 0;% in meter
+    zr1 = 0;% in meter
+    xr2 = 0;
+    yr2 = 50;
+    zr2 = 0;
+
+    psi = 85*d2r;
+    r3 = 50;
+    xr3 = r3*cos(psi);% in meter
+    yr3 = r3*sin(psi);% in meter
+    zr3 = 0;
+
+    phi = 0*d2r;
+    beta = 45*d2r;
+    alpha = 45*d2r;
+    r4 = 50;
+    xr4 = r4*sin(phi)*cos(beta);
+    yr4 = r4*sin(phi)*cos(alpha);
+    zr4 = r4*cos(phi);% in meter
+    
+    HH = [xr2-xr1, yr2-yr1, zr2-zr1
+        xr3-xr1, yr3-yr1, zr3-zr1
+        xr4-xr1, yr4-yr1, zr4-zr1];
+    
+    q(1) = xr1^2+yr1^2+zr1^2;
+    q(2) = xr2^2+yr2^2+zr2^2;
+    q(3) = xr3^2+yr3^2+zr3^2;
+    q(4) = xr4^2+yr4^2+zr4^2;
 % ================================
 % Set the simulation run time
 % ================================
@@ -64,10 +93,10 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
         TT2 = 0.5*T;
         TT3 = 0.75*T;
         gama_0 = 1*45*d2r;
-        apha_0 = 2*45*d2r;
+        apha_0 = 1*45*d2r;
         ft =1*0.01;
         wt = 2*pi*ft;
-        radius = 1*25;
+        radius = 1*20;
   %      T = 1;
         delta_t = dt;                                  % delta time for simulating the true dynamics = 0.01 sec
         delta_s = 5*delta_t;                           % sampling at every 0.5 second for the Kalman filter
@@ -138,7 +167,7 @@ if (profile_flag ==1),
 end
 
 if (profile_flag == 2),
-    mag_angle = 1.000; % 4*pi
+    mag_angle = 1.500; % 4*pi
     for i = 2:n,
 %        phi(i) = phi(i-1) + wxm(i-1)*dt;
 %        theta(i) = theta(i-1) + wym(i-1)*dt;
@@ -527,7 +556,7 @@ s6_Q_z0(1:3,1:3) = [sig_x_arw^2 0 0
                     0 sig_y_arw^2 0 
                     0 0 sig_z_arw^2]; 
                 % 0.21 @@
-s6_Q_z(1:3,1:3) = 1000*s6_Q_z0;
+s6_Q_z(1:3,1:3) = 0.01*s6_Q_z0;
 s6_Q_z(4,4) = 1*sig_x_rrw^2;
 s6_Q_z(5,5) = 1*sig_y_rrw^2;
 s6_Q_z(6,6) = 1*sig_z_rrw^2;
@@ -713,24 +742,61 @@ n1 = 0.5*(k-1);
 % n1 = 500;
 n2 = k-1;
 
-[(bx0-bx_h(n2))/g (by0-by_h(n2))/g (bz0-bz_h(n2))/g],
-3600*[(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d],
+% [(bx0-bx_h(n2))/g (by0-by_h(n2))/g (bz0-bz_h(n2))/g],
+% 3600*[(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d],
 % ======================================================
 % Three sigma value computations
 % ======================================================
-B = [sort(abs(dq11(n1:n2)*r2d)) sort(abs(dq21(n1:n2)*r2d)) sort(abs(dq31(n1:n2)*r2d))];
-N = length(B);
-number = fix(0.9973*N);
-B1 = [B(number,1) B(number,2) B(number,3)]
+% B = [sort(abs(dq11(n1:n2)*r2d)) sort(abs(dq21(n1:n2)*r2d)) sort(abs(dq31(n1:n2)*r2d))];
+% N = length(B);
+% number = fix(0.9973*N);
+% B1 = [B(number,1) B(number,2) B(number,3)]
+% 
+% D = [sort(abs(x_err(n1:n2)')) sort(abs(y_err(n1:n2)')) sort(abs(z_err(n1:n2)'))];
+% N = length(D);
+% number = fix(0.9973*N);
+% D1 = [D(number,1) D(number,2) D(number,3)]
+% 
+% F = [sort(abs(x_err(1000:1500)')) sort(abs(y_err(1000:1500)')) sort(abs(z_err(1000:1500)'))];
+% N = length(F);
+% number = fix(0.9973*N);
+% F1 = [F(number,1) F(number,2) F(number,3)]
 
-D = [sort(abs(x_err(n1:n2)')) sort(abs(y_err(n1:n2)')) sort(abs(z_err(n1:n2)'))];
-N = length(D);
-number = fix(0.9973*N);
-D1 = [D(number,1) D(number,2) D(number,3)]
+% LS
+for ii=1:n
+    b = [R1m(ii)^2-R2m(ii)^2-q(1)+q(2)
+         R1m(ii)^2-R3m(ii)^2-q(1)+q(3)
+         R1m(ii)^2-R4m(ii)^2-q(1)+q(4)];
+    r(:,ii) = 0.5*inv(HH'*HH)*HH'*b;
+end
 
-F = [sort(abs(x_err(1000:1500)')) sort(abs(y_err(1000:1500)')) sort(abs(z_err(1000:1500)'))];
-N = length(F);
-number = fix(0.9973*N);
-F1 = [F(number,1) F(number,2) F(number,3)]
+LS_delta_P = [x_p_N-r(1,:); y_p_N-r(2,:); z_p_N-r(3,:)];
+err1 = LS_delta_P(1,:).^2+LS_delta_P(2,:).^2+LS_delta_P(3,:).^2;
+A1 = mean(err1)
+
+ % CRLB
+for jj=1:n-1
+    delta_R = [-2*R1m(jj)*nvx_r(jj)+2*R2m(jj)*nvy_r(jj)
+                -2*R1m(jj)*nvx_r(jj)+2*R3m(jj)*nvy_r(jj)
+                -2*R1m(jj)*nvx_r(jj)+2*R4m(jj)*nvy_r(jj)];
+    delta_P(:,jj) = 0.5*inv(HH)*delta_R;
+    conv_dR(:,:,jj) = [R1m(jj)^2*nvx_r(jj)^2+R2m(jj)^2*nvy_r(jj)^2, R1m(jj)^2*nvx_r(jj)^2, R1m(jj)^2*nvx_r(jj)^2;
+                    R1m(jj)^2*nvx_r(jj)^2, R1m(jj)^2*nvx_r(jj)^2+R3m(jj)^2*nvy_r(jj)^2, R1m(jj)^2*nvx_r(jj)^2;
+                    R1m(jj)^2*nvx_r(jj)^2, R1m(jj)^2*nvx_r(jj)^2, R1m(jj)^2*nvx_r(jj)^2+R4m(jj)^2*nvy_r(jj)^2];
+    E_dp(:,:,jj) = inv(HH)*conv_dR(:,:,jj)*inv(HH)';
+end
+
+for jj=1:n-1
+   plot_E_dp(1,jj) =  E_dp(1,1,jj);
+   plot_E_dp(2,jj) =  E_dp(2,2,jj);
+   plot_E_dp(3,jj) =  E_dp(3,3,jj);
+end   
+
+err = abs(plot_E_dp(1,:)')+abs(plot_E_dp(2,:)')+abs(plot_E_dp(3,:)');
+B1 = mean(err)
+
+err3 = x_err.^2 + y_err.^2 + z_err.^2;
+D1 = mean(err3)
+
 paperplot;
 plot58;

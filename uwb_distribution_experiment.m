@@ -40,6 +40,19 @@ xr4 = 0.13;
 yr4 = 7.49;
 zr4 = 0.327;% in meter
 
+% xr1 = 0;% in meter
+% yr1 = 0.9;% in meter
+% zr1 = 2.75;% in meter
+% xr2 = 0.17;
+% yr2 = 11.8;
+% zr2 = 2.72;
+% xr3 = 7.78;% in meter
+% yr3 = 11.7;% in meter
+% zr3 = 2.5;
+% xr4 = 7.65;
+% yr4 = 0.13;
+% zr4 = 2.7;% in meter
+
 H = [xr2-xr1, yr2-yr1, zr2-zr1
     xr3-xr1, yr3-yr1, zr3-zr1
     xr4-xr1, yr4-yr1, zr4-zr1];
@@ -112,20 +125,26 @@ xlabel('X position in m')
 ylabel('Y position in m')
 grid
 
+% anchp = [xr1 yr1 zr1
+%         xr3 yr3 zr3
+%         xr2 yr2 zr2
+%         xr4 yr4 zr4
+%         xr1 yr1 zr1];
 anchp = [xr1 yr1 zr1
-        xr3 yr3 zr3
         xr2 yr2 zr2
+        xr3 yr3 zr3
         xr4 yr4 zr4
         xr1 yr1 zr1];
 anchm = [xr4 yr4 zr4
         xr1 yr1 zr1
         xr2 yr2 zr2];
 figure (4)
-plotcube([5.8 7.5 2.9],[0 0 0],.1,[0 0 1]);
+% plotcube([5.8 7.5 2.9],[0 0 0],.1,[0 0 1]);
+plotcube([7.8 11.8 2.8],[0 0 0],.1,[0 0 1]);
 hold on
 % plot3(xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*','linewidth',2)
 plot3(anchp(:,1),anchp(:,2),anchp(:,3),'r--*','linewidth',2);
-plot3(anchm(:,1),anchm(:,2),anchm(:,3),'r','linewidth',2);
+% plot3(anchm(:,1),anchm(:,2),anchm(:,3),'r','linewidth',2);
 xlabel('X position in m','FontSize',18)
 ylabel('Y position in m','FontSize',18)
 zlabel('Z position in m','FontSize',18)

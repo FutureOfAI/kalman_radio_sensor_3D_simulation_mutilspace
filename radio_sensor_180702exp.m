@@ -1,15 +1,13 @@
 % Program name: radio_sensor_08_04.m
 % 9-state Kalman filter with 4 radio sensors for 6DOF motion tracking
 % simulation with 6-state EKF with accel and magnetometers as measurements
-% uwb NLOS simulation
-% 9/10/2020
-% put project to github.com, teacher could review my changes
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 8/5/2017
 close all;
 clear all;
 clc;
 format short e
-
+% practise data array
+dwm_trans_3D_180702;
 % define some constants
 r2d = (180/pi);
 d2r = (pi/180);
@@ -22,55 +20,60 @@ r3 = [0 0 1];
 dt = 0.01;
 t=0;
 
-simul_nlos = 0; % ??NLOS????
-
 % ==================================================================
 % Earth magnetic field values in E-frame  |
 % ==================================================================
-Mag = 45;           % uT (Micro Tesla) F component
-Angle_I = 0*35*d2r;  % inclination angle - 0 deg inclination angle for equator location
+% Mag = 45.466;           % uT (Micro Tesla) F component
+Angle_I = 1*31*d2r;  % inclination angle - 0 deg inclination angle for equator location
 %Angle_I = -90*d2r;  % 90 inclination angle foe north pole location
-Angle_D = -0*4*d2r;   % declination angle
-mag_E_0 = [Mag*cos(Angle_I)*cos(Angle_D) Mag*cos(Angle_I)*sin(Angle_D) Mag*sin(Angle_I)];
-% Need to convert into North-West-Up Navigation frame and consistent with
+Angle_D = -1*4*d2r;   % declination angle
+% mag_E_0 = [Mag*cos(Angle_I)*cos(Angle_D) Mag*cos(Angle_I)*sin(Angle_D) Mag*sin(Angle_I)];
+mag_E_0 = [Mag*cos(Angle_I) 0 0];
+% Need to convert into East-North-Up Navigation frame and consistent with
 % the positive psi angle rotation
 mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
-%mag_E = (cx(180*d2r)*mag_E_0')';
 % =====================================================
 % Set up for running Monte Caro runs
 % ======================================================
 % Define four UWB sensors locations
+% @@ copyright leo
 % =====================================================
         xr1 = 0;% in meter
-        yr1 = 25;% in meter
-        zr1 = 0;% in meter
-        xr2 = 0;
-        yr2 = -25;
-        zr2 = 0;
-        xr3 = 25;% in meter
-        yr3 = 0;% in meter
-        zr3 = 25;
-        xr4 = -25;
-        yr4 = 0;
-        zr4 = 25;% in meter
+        yr1 = 0.9;% in meter
+        zr1 = 2.75;% in meter
+        
+        xr2 = 0.17;
+        yr2 = 11.8;
+        zr2 = 2.72;
+        
+        xr3 = 7.78;% in meter
+        yr3 = 11.7;% in meter
+        zr3 = 2.5;
+        
+        xr4 = 7.65;
+        yr4 = 0.13;
+        zr4 = 2.7;% in meter
 % ================================
 % Set the simulation run time
 % ================================
  % ================================================
         fn = 1*0.005;
         fz = 1*0.005;
-        T = 4*(1/fz);
+        mag_angle = 10.000*d2r;
+%         T = 4*(1/fz);
+        T = 39.9; % experiment data @@  n=T*(1/f)=39.9s/(1/0.01)=3990
         TT1 = T;
         TT2 = 0.5*T;
-        TT3 = 0.75*T; 
+        TT3 = 0.75*T;
         gama_0 = 1*45*d2r;
         apha_0 = 1*45*d2r;
         ft =1*0.01;
         wt = 2*pi*ft;
-        radius = 1*10;
+        radius = 0.1*10;
   %      T = 1;
         delta_t = dt;                                  % delta time for simulating the true dynamics = 0.01 sec
-        delta_s = 10*delta_t;                           % sampling at every 0.5 second for the Kalman filter
+%         delta_s = 5*delta_t;                           % sampling at every 0.5 second for the Kalman filter
+        delta_s = 2*delta_t;  %delta_t is 9-dof sample rate and delta_s is UWB sample rate @@
         err_flag = 1;                                   % flag for turning on the magnetometer and accelerometer errors
         err_flag_g = 1;                                 % flag for turning in the gyro noises
   % ================================================
@@ -80,14 +83,15 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
         m = size(t0_1);
         t00 = t0;
   % ================================================
-        phi_0 = 0*1.5*d2r;%x
-        theta_0 = -0*1.5*d2r;%y
+  % initial platform attitude
+        phi_0 = 1*1.5*d2r;%x
+        theta_0 = -1*1.5*d2r;%y
         psi_0 = 1*4.5*d2r;%z
    %     wn = 2*pi*fn*d2r;
         wn = 2*pi*fn;% rad
         wx(1:n) = 0*wn;
         wy(1:n) = 0*wn;
-        wz(1:n) = 0*wn;
+        wz(1:n) = 1*wn;
    % ==================================================================
    % Create other angular motion (such as sinusoidal motion) to try 
    % to improve the bias estimation performance
@@ -102,18 +106,6 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
 % Note that the angles phi_N, theta_N, psi_N are the angles from B-frame to
 % N-frame or E-frame
 % =========================================================================
-
-%=====================================================
-% Select motion profiles
-% trajectory is generated in navigation frame (N-frame)
-%================================
-    % Set motion profile flags
-    profile_flag = 1;        % straight motion
-%     profile_flag = 2;         % screw motion
-%     profile_flag = 3;        % circular motion
-    %
-if (profile_flag ==1),
-    mag_angle = 1.000*d2r;
     for i = 2:n,
 %        phi(i) = phi(i-1) + wxm(i-1)*dt;
 %        theta(i) = theta(i-1) + wym(i-1)*dt;
@@ -130,57 +122,24 @@ if (profile_flag ==1),
     end
 %    wx(1) = 0;
     wz(1) = 2*pi*fz*mag_angle;
+%=====================================================
+% Select motion profiles
+% trajectory is generated in navigation frame (N-frame)
+%================================
+    % Set motion profile flags
+    % profile_flag = 1:         straight motion
+    % profile_flag = 2;         circular motion
+    % profile_flag = 3;         race track motion
+    profile_flag = 1;
+    %
+if (profile_flag ==1),       
 % ====================================================
 % Generate platform motion in N-frame
 % ===================================================
 %    [x_p_N,x_v_N,x_a_N,y_p_N,y_v_N,y_a_N,z_p_N,z_v_N,lina_z_a_N] = trajectory3d_line(radius,gama_0,apha_0,wt,t0);
     [x_p_N,x_v_N,x_a_N,y_p_N,y_v_N,y_a_N,z_p_N,z_v_N,z_a_N] = trajectory3d_line(radius,gama_0,apha_0,wt,t0);
 end
-
-if (profile_flag == 2),
-    mag_angle = 1.000; % 4*pi
-    for i = 2:n,
-%        phi(i) = phi(i-1) + wxm(i-1)*dt;
-%        theta(i) = theta(i-1) + wym(i-1)*dt;
-%        psi(i) = psi(i-1) + wzm(i-1)*dt;
         
-        
-         phi_N(i) = phi_N(i-1) + wx(i-1)*dt;
-%         phi_N(i) = phi_0*cos(2*pi*fn*(i-1)*dt);
-%         wx(i) = -2*pi*fn*phi_0*sin(2*pi*0.1*fn*(i-1)*dt);
-         theta_N(i) = theta_N(i-1) + wy(i-1)*dt;
-         psi_N(i) = psi_N(i-1) + wz(i-1)*dt;
-         t3(i) = mag_angle*sin(2*pi*fz*(i-1)*dt);
-%          wz(i) = 2*pi*fz*mag_angle*cos(2*pi*fz*(i-1)*dt);
-    end
-%    wx(1) = 0;
-%     wz(1) = 2*pi*fz*mag_angle;
-% ====================================================
-% Generate platform motion in N-frame
-% ===================================================
-    [x_p_N,x_v_N,x_a_N,y_p_N,y_v_N,y_a_N,z_p_N,z_v_N,z_a_N] = trajectory3d_circle(radius,wn,10*t3,mag_angle);
-end
-
-if (profile_flag == 3)
-    mag_angle = 2.000;
-    for i = 2:n,
-         phi_N(i) = phi_N(i-1) + wx(i-1)*dt;
-         theta_N(i) = theta_N(i-1) + wy(i-1)*dt;
-         psi_N(i) = psi_N(i-1) + wz(i-1)*dt;
-         t3(i) = mag_angle*sin(2*pi*fz*(i-1)*dt);
-%          wz(i) = 2*pi*fz*mag_angle*cos(2*pi*fz*(i-1)*dt);
-    end
-    [x_p_N,x_v_N,x_a_N,y_p_N,y_v_N,y_a_N,z_p_N,z_v_N,z_a_N] = trajectory2d_circle (radius,t3,wt);%round cycle
-end
-
-% figure (16)
-% subplot(311)
-% plot3(x_p_N,y_p_N,z_p_N,xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
-% plot3(x_p_N,y_p_N,z_p_N)
-% % plot3(xpm_Nh(500:3991),ypm_Nh(500:3991),zpm_Nh(500:3991),'b-',xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
-% xlabel('X position in m')
-% ylabel('Y position in m')
-
     % =================================================================
     % add gyro bias and noise
     % psi theta phi not constant
@@ -258,9 +217,7 @@ for jj = 2:n,
     Q_E_B(:,jj) = DTQ(CE_B(:,:,jj));
 %     QE_B_save(:,jj) = QE_B;
     QB_E = -Q_E_B(:,jj);
-    QB_E(4,1) = Q_E_B(4,jj);
-    Qtmp = [QB_E(4) QB_E(1) QB_E(2) QB_E(3)];
-    euler(:,jj) = quatern2euler(Qtmp);
+    QB_E(4,1) = Q_E_B(4,1,1);
 % ============================================
 % quaternion propagation algorithm
 % ============================================
@@ -285,36 +242,30 @@ for jj = 2:n,
 % =============================================
     inv_QE_B_m = -QE_B_m;
     inv_QE_B_m(4,1) = QE_B_m(4,1);
-    Qtmp = [inv_QE_B_m(4) inv_QE_B_m(1) inv_QE_B_m(2) inv_QE_B_m(3)];
-    eulerm(:,jj) = quatern2euler(Qtmp);
     dQ1 = qmult(Q_E_B(:,jj),inv_QE_B_m);
     dq1(jj) = 2*dQ1(1,1);
     dq2(jj) = 2*dQ1(2,1);
     dq3(jj) = 2*dQ1(3,1);
 end
-
-figure (11)
-subplot(311)
-plot(time,dq1*r2d,'b')
-subplot(312)
-plot(time,dq2*r2d,'r')
-subplot(313)
-plot(time,dq3*r2d,'g')
-xlabel('Time in seconds')
-ylabel('Attitude errors in deg')
-grid
-figure (20)
-subplot(211)
-plot(time,euler(3,:)*r2d,'r')
-subplot(212)
-plot(time,eulerm(3,:)*r2d,'r')
+%
+% figure (11)
+% subplot(311)
+% plot(time,dq1*r2d,'b')
+% subplot(312)
+% plot(time,dq2*r2d,'r')
+% subplot(313)
+% plot(time,dq3*r2d,'g')
+% xlabel('Time in seconds')
+% ylabel('Attitude errors in deg')
+% grid
 %
 %stop
 %
-% ====================================================
-% Need to convert into body frame (B-frame) for accelerometer sensings and
-% magnetic sensing since they are mounted on the body frame
-% ====================================================
+% % ==================================================== @@ simulation
+% accelemeter and Magnetometers
+% % Need to convert into body frame (B-frame) for accelerometer sensings and
+% % magnetic sensing since they are mounted on the body frame
+% % ====================================================
 x_m_B = zeros(1,n);
 y_m_B = zeros(1,n);
 z_m_B = zeros(1,n);
@@ -322,26 +273,26 @@ z_m_B = zeros(1,n);
 x_a_B = zeros(1,n);
 y_a_B = zeros(1,n);
 z_a_B = zeros(1,n);
-% ================================
-for i = 1:n,
-    C11 = CE_B(1,1,i);
-    C12 = CE_B(1,2,i);
-    C13 = CE_B(1,3,i);
-    C21 = CE_B(2,1,i);
-    C22 = CE_B(2,2,i);
-    C23 = CE_B(2,3,i);
-    C31 = CE_B(3,1,i);
-    C32 = CE_B(3,2,i);
-    C33 = CE_B(3,3,i);
-% accelerometers
-    x_a_B(i) = [C11 C12 C13]*[x_a_N(i) y_a_N(i) z_a_N(i) + g]';
-    y_a_B(i) = [C21 C22 C23]*[x_a_N(i) y_a_N(i) z_a_N(i) + g]';
-    z_a_B(i) = [C31 C32 C33]*[x_a_N(i) y_a_N(i) z_a_N(i) + g]';% linear accel in z-axis
-% Magnetometers
-    x_m_B(i) = [C11 C12 C13]*mag_E';
-    y_m_B(i) = [C21 C22 C23]*mag_E';
-    z_m_B(i) = [C31 C32 C33]*mag_E';
-end
+% % ================================
+% for i = 1:n,
+%     C11 = CE_B(1,1,i);
+%     C12 = CE_B(1,2,i);
+%     C13 = CE_B(1,3,i);
+%     C21 = CE_B(2,1,i);
+%     C22 = CE_B(2,2,i);
+%     C23 = CE_B(2,3,i);
+%     C31 = CE_B(3,1,i);
+%     C32 = CE_B(3,2,i);
+%     C33 = CE_B(3,3,i);
+% % accelerometers
+%     x_a_B(i) = [C11 C12 C13]*[x_a_N(i) y_a_N(i) z_a_N(i) + g]';
+%     y_a_B(i) = [C21 C22 C23]*[x_a_N(i) y_a_N(i) z_a_N(i) + g]';
+%     z_a_B(i) = [C31 C32 C33]*[x_a_N(i) y_a_N(i) z_a_N(i) + g]';% linear accel in z-axis
+% % Magnetometers
+%     x_m_B(i) = [C11 C12 C13]*mag_E';
+%     y_m_B(i) = [C21 C22 C23]*mag_E';
+%     z_m_B(i) = [C31 C32 C33]*mag_E';
+% end
 % =====================================
 % Magnetometers (biases & noises)
 % =====================================
@@ -377,7 +328,7 @@ mag_sig_z_rrw = mag_sig_z_rrw_0;
 bx0=1*0.1*g;                              % initial accel bias in g in along-direction
 by0=-1*0.1*g;                             % initial accel bias in g in perpenticular-direction
 bz0=1*0.1*g;                              % initial accel bias in g in perpenticular-direction
-err_factor = 1;
+err_factor = 1.0;
 %
 sig_xr_0 = err_factor*0.1*g/3600;         % accel bias stability in g/sec-sqrt(sec) in along-direction
 sig_yr_0 = err_factor*0.1*g/3600;         % accel bias stability in g/sec-sqrt(sec) in penpenticular-direction
@@ -415,11 +366,11 @@ sig_zr=sig_zr_0;%(bias)
 % =====================================================================================
 % Define ""4 radio sensor"" parameters (noise)
 % =====================================================================================
-radiosensor_err_factor = 1;
+radiosensor_err_factor = 1.0;
 sig_x_r=radiosensor_err_factor*0.1;              % radio sensor measurement noise in meters x-direction
 sig_y_r=radiosensor_err_factor*0.1;              % radio sensor measurement noise in meters y-direction
 %======================================================================================
-[R1m,R2m,R3m,R4m,nvx_r,nvy_r] = radio_sensor3d_m_4(xr1,yr1,zr1,xr2,yr2,zr2,xr3,yr3,zr3,xr4,yr4,zr4,x_p_N,y_p_N,z_p_N,sig_x_r,sig_y_r,n,m,simul_nlos);%4 four radio sensors
+[R1m,R2m,R3m,R4m,nvx_r,nvy_r] = radio_sensor3d_m_4(xr1,yr1,zr1,xr2,yr2,zr2,xr3,yr3,zr3,xr4,yr4,zr4,x_p_N,y_p_N,z_p_N,sig_x_r,sig_y_r,n,m,0);%4 four radio sensors
 %================================================================
 [sensor_step,propagation_step]=propagate_step(T,delta_t,delta_s);
 %================================================================
@@ -517,7 +468,6 @@ s6_H(1,1) = 1;
 s6_H(2,2) = 1;
 s6_H(3,3) = 1;
 
-% 350 @@
 s6_R = 1*[(1.5*d2r)^2 0 0                     % TRIAD attitude determination error in x - axis
     0 (1.5*d2r)^2 0                           % TRIAD attitude determination error in y - axis
     0 0 (1.5*d2r)^2];                         % TRIAD attitude determination error in z - axis
@@ -526,11 +476,10 @@ s6_Q_z=zeros(6);
 s6_Q_z0(1:3,1:3) = [sig_x_arw^2 0 0 
                     0 sig_y_arw^2 0 
                     0 0 sig_z_arw^2]; 
-                % 0.21 @@
 s6_Q_z(1:3,1:3) = 0.01*s6_Q_z0;
-s6_Q_z(4,4) = 1*sig_x_rrw^2;
-s6_Q_z(5,5) = 1*sig_y_rrw^2;
-s6_Q_z(6,6) = 1*sig_z_rrw^2;
+s6_Q_z(4,4) = sig_x_rrw^2;
+s6_Q_z(5,5) = sig_y_rrw^2;
+s6_Q_z(6,6) = sig_z_rrw^2;
 % ============================================================
 % ============================================================
 % Start the simulation run                                   |
@@ -542,9 +491,11 @@ dQerr = [dq11(1) dq21(1) dq31(1) sqrt(1 - dq11(1)^2 - dq21(1)^2 - dq31(1)^2)]';
 QE_B_m = qmult(dQerr,Q_E_B(:,1));
 Q_E_B_e = zeros(4,n);
 k1 = 1;
+% l=1;%experiment data @@@
 for i=1:sensor_step
 	for j=1:propagation_step
         k=1+j+(i-1)*propagation_step;
+        k = fix(k);
    % accel biases     
         bx_h(k)=bx_h(k-1);
         by_h(k)=by_h(k-1);
@@ -556,10 +507,16 @@ for i=1:sensor_step
 % ===========================================================
 % Perform inertial attitude computations
 % =========================================
-        w_EB_B_xm(k) = w_EB_B_xm(k) - bgx_h(k);
-        w_EB_B_ym(k) = w_EB_B_ym(k) - bgy_h(k);
-        w_EB_B_zm(k) = w_EB_B_zm(k) - bgz_h(k);
-        % ============================================
+%         w_EB_B_xm(k) = w_EB_B_xm(k) - bgx_h(k);
+%         w_EB_B_ym(k) = w_EB_B_ym(k) - bgy_h(k);
+%         w_EB_B_zm(k) = w_EB_B_zm(k) - bgz_h(k);
+        w_EB_B_xm(k) = gro(1,k) - bgx_h(k);% experiment data @@
+        w_EB_B_ym(k) = gro(2,k) - bgy_h(k);% experiment data @@
+        w_EB_B_zm(k) = gro(3,k) - bgz_h(k);% experiment data @@
+%         w_EB_B_xm(k) = gro(1,k);% experiment data @@
+%         w_EB_B_ym(k) = gro(2,k);% experiment data @@
+%         w_EB_B_zm(k) = gro(3,k);% experiment data @@        
+        % ===========================================
         % quaternion propagation algorithm
         % ============================================
         d1 = w_EB_B_xm(k)*dt/2;
@@ -583,28 +540,29 @@ for i=1:sensor_step
         dy(k) = delta_C(1,3);
         dz(k) = delta_C(2,1);
         %DC_E_B_m(:,:,k),
-    % =========================================
-    % Compute the attitude errors
-        inv_QE_B_m = - QE_B_m;
-        inv_QE_B_m(4,1) = QE_B_m(4,1);
-        Qtmp = [inv_QE_B_m(4) inv_QE_B_m(1) inv_QE_B_m(2) inv_QE_B_m(3)];
-        eulersave(:,k) = quatern2euler(Qtmp);        
-        dQ1 = qmult(Q_E_B(:,k),inv_QE_B_m);
-    %    dQ1 = qmult(inv_QE_B_m,QE_B);
-        dq11(k) = 2*dQ1(1,1);
-        dq21(k) = 2*dQ1(2,1);
-        dq31(k) = 2*dQ1(3,1);
+% =========================================
+% Compute the attitude errors @@
+    inv_QE_B_m = - QE_B_m;
+    inv_QE_B_m(4,1) = QE_B_m(4,1);
+    Qtmp = [inv_QE_B_m(4) inv_QE_B_m(1) inv_QE_B_m(2) inv_QE_B_m(3)];
+    eulersave(:,k) = quatern2euler(Qtmp); 
+    dQ1 = qmult(Q_E_B(:,k),inv_QE_B_m);
+%    dQ1 = qmult(inv_QE_B_m,QE_B);
+    dq11(k) = 2*dQ1(1,1);
+    dq21(k) = 2*dQ1(2,1);
+    dq31(k) = 2*dQ1(3,1);
 % =========================================
 % Perform inertial navigation computations
 % =========================================
-        [xpm_Nh,ypm_Nh,zpm_Nh,xvm_Nh,yvm_Nh,zvm_Nh,xam_Nh,yam_Nh,zam_Nh,axm_h,aym_h,azm_h]=inertial_navigation_computation9_radio(xvm_Nh,yvm_Nh,zvm_Nh,xpm_Nh,ypm_Nh,zpm_Nh,xam_Nh,yam_Nh,zam_Nh,axm,aym,azm,bx_h,by_h,bz_h,DC_E_B_m,k,dt);
+%         [xpm_Nh,ypm_Nh,zpm_Nh,xvm_Nh,yvm_Nh,zvm_Nh,xam_Nh,yam_Nh,zam_Nh,axm_h,aym_h,azm_h]=inertial_navigation_computation9_radio(xvm_Nh,yvm_Nh,zvm_Nh,xpm_Nh,ypm_Nh,zpm_Nh,xam_Nh,yam_Nh,zam_Nh,axm,aym,azm,bx_h,by_h,bz_h,DC_E_B_m,k,dt);
+        [xpm_Nh,ypm_Nh,zpm_Nh,xvm_Nh,yvm_Nh,zvm_Nh,xam_Nh,yam_Nh,zam_Nh,axm_h,aym_h,azm_h]=inertial_navigation_computation9_radio(xvm_Nh,yvm_Nh,zvm_Nh,xpm_Nh,ypm_Nh,zpm_Nh,xam_Nh,yam_Nh,zam_Nh,acc(1,:)',acc(2,:)',acc(3,:)',bx_h,by_h,bz_h,DC_E_B_m,k,dt);% experiment data @@
         x_err(k) = x_p_N(k) - xpm_Nh(k);
         y_err(k) = y_p_N(k) - ypm_Nh(k);
         z_err(k) = z_p_N(k) - zpm_Nh(k);
 % ===========================================================
 % Perform Kalman filter propagation for 9-state Kalman filter
 % ===========================================================
-        [phi_z,Q_z,F_z]=define_Dymamic_equation9_radio_v2(F_z,Q_z,sig_bx,sig_by,sig_bz,sig_xr,sig_yr,sig_zr,DC_E_B_m,k,dt,axm,aym,azm,dq11(k),dq21(k),dq31(k),simul_nlos);
+        [phi_z,Q_z,F_z]=define_Dymamic_equation9_radio_v2(F_z,Q_z,sig_bx,sig_by,sig_bz,sig_xr,sig_yr,sig_zr,DC_E_B_m,k,dt,axm,aym,azm,dq11(k),dq21(k),dq31(k),0);
         [xz_h,P00_z]=Kalman_Filter_estimate1_radio(xz_h,phi_z,P00_z,Q_z,dt);
 % ===========================================================
 % Perform Kalman filter propagation for 6-state Kalman filter
@@ -629,15 +587,52 @@ for i=1:sensor_step
 % ========================================================
 % Perform Kalman filter updates for 9-states filter
 % =======================================================
-    [H,R,R1m_h,R2m_h,R3m_h,R4m_h]=radio_discrete_5_3_EKF(xr1,yr1,zr1,xr2,yr2,zr2,xr3,yr3,zr3,xr4,yr4,zr4,xpm_Nh,ypm_Nh,zpm_Nh,sig_x_r,sig_y_r,k,simul_nlos);
+% xpm_Nh,ypm_Nh,zpm_Nh use least squre position, converge will be more
+% quickly @@
+    [H,R,R1m_h,R2m_h,R3m_h,R4m_h]=radio_discrete_5_3_EKF(xr1,yr1,zr1,xr2,yr2,zr2,xr3,yr3,zr3,xr4,yr4,zr4,xpm_Nh,ypm_Nh,zpm_Nh,sig_x_r,sig_y_r,k,0);
 %   
-    [P00_z,K_z,z_update,Mu_z]=Kalman_Filter_update_5_3_radio(P00_z,R1m,R2m,R3m,R4m,H,R,R1m_h,R2m_h,R3m_h,R4m_h,k);
+%     [P00_z,K_z,z_update,Mu_z]=Kalman_Filter_update_5_3_radio(P00_z,R1m,R2m,R3m,R4m,H,R,R1m_h,R2m_h,R3m_h,R4m_h,k);
+%     [P00_z,K_z,z_update,Mu_z]=Kalman_Filter_update_5_3_radio(P00_z,pos(1,:)',pos(2,:)',pos(3,:)',pos(4,:)',H,R,R1m_h,R2m_h,R3m_h,R4m_h,k);% experiment data @@
+
 %    
+%     c = 0.2*2;%experiment data @@@
+%     [P00_z,K_z,z_update,Mu_z,Mu_1,Mu_2,Mu_3,Mu_4,Mu_5,Mu_12,Mu_13,Mu_14,Mu_23,Mu_24,Mu_34,Mu_123,Mu_124,Mu_134,Mu_234,Mu_1234]=Kalman_Filter_update_5_3_radio_v4(P00_z,pos(1,:)',pos(2,:)',pos(3,:)',pos(4,:)',H,R,R1m_h,R2m_h,R3m_h,R4m_h,k,c);% experiment data @@@
+    [P00_z,K_z,z_update,Mu_z]=Kalman_Filter_update_5_3_radio(P00_z,pos(1,:)',pos(2,:)',pos(3,:)',pos(4,:)',H,R,R1m_h,R2m_h,R3m_h,R4m_h,k);% experiment data @@
+
     [xpm_Nh,ypm_Nh,zpm_Nh,xvm_Nh,yvm_Nh,zvm_Nh,bx_h,by_h,bz_h]=upon_radiosensor_measurement_5_3(xpm_Nh,ypm_Nh,zpm_Nh,xvm_Nh,yvm_Nh,zvm_Nh,k,bx_h,by_h,bz_h,z_update);
     % Update the current accel measurements
-    axm_h(k)=axm(k)-bx_h(k);
-    aym_h(k)=aym(k)-by_h(k);
-    azm_h(k)=azm(k)-bz_h(k);
+
+        %---------------------%
+        % experiment data @@@ %
+        %---------------------%
+%     Mu__1(1,l) = Mu_1; % not Anchor1   
+%     Mu__1(2,l) = Mu_2; % not Anchor2
+%     Mu__1(3,l) = Mu_3; % not Anchor3
+%     Mu__1(4,l) = Mu_4; % not Anchor4
+%     Mu__1(5,l) = Mu_5; % all signal is good 
+%     
+%     Mu__2(1,l) = Mu_12; % not anchor1 anchor2
+%     Mu__2(2,l) = Mu_13; % not anchor1 anchor3
+%     Mu__2(3,l) = Mu_14; % not anchor1 anchor4
+%     Mu__2(4,l) = Mu_23; % not anchor2 anchor3
+%     Mu__2(5,l) = Mu_24; % not anchor2 anchor4
+%     Mu__2(6,l) = Mu_34; % not anchor3 anchor4
+%     
+%     Mu__3(1,l) = Mu_123; % not % Not Anchor1 Anchor2 Anchor3
+%     Mu__3(2,l) = Mu_124; % not % Not Anchor1 Anchor2 Anchor4
+%     Mu__3(3,l) = Mu_134; % not % Not Anchor1 Anchor3 Anchor4
+%     Mu__3(4,l) = Mu_234; % not % Not Anchor2 Anchor3 Anchor4  
+%     
+%     Mu__4(1,l) = Mu_1234; % not % Not Anchor1 Anchor2 Anchor3 Anchor4    
+%     l=l+1;
+        % experiment data @@@ %    
+        
+%     axm_h(k)=axm(k)-bx_h(k);
+%     aym_h(k)=aym(k)-by_h(k);
+%     azm_h(k)=azm(k)-bz_h(k);
+    axm_h(k)=acc(1,k)'-bx_h(k);% experiment data @@
+    aym_h(k)=acc(2,k)'-by_h(k);% experiment data @@
+    azm_h(k)=acc(3,k)'-bz_h(k);% experiment data @@
     %
     x_err(k) = x_p_N(k) - xpm_Nh(k);
     y_err(k) = y_p_N(k) - ypm_Nh(k);
@@ -656,10 +651,13 @@ k1 = k1 + 1;
 % =======================================================
 % Perform Kalman filter updates for 6-states filter
 % =======================================================
-    [C_E_B_e] = TRIAD(axm_h,aym_h,azm_h,x_a_N,y_a_N,z_a_N,mag_xm,mag_ym,mag_zm,mag_E,k);
+%     [C_E_B_e] = TRIAD(axm_h,aym_h,azm_h,x_a_N,y_a_N,z_a_N,mag_xm,mag_ym,mag_zm,mag_E,k);
+    [C_E_B_e] = TRIAD(axm_h,aym_h,azm_h,x_a_N,y_a_N,z_a_N,mag_LP(1,:)',mag_LP(2,:)',mag_LP(3,:)',mag_E,k); % experiment data @@
+
 %    [C_E_B_e] = TRIAD(axm_h,aym_h,azm_h,xam_Nh,yam_Nh,zam_Nh,mag_xm,mag_ym,mag_zm,mag_E,k);    
     Q_E_B_e(:,k) = DTQ(C_E_B_e);
-    psi_Nh =  atan2(mag_xm(k),mag_ym(k));
+%     psi_Nh =  atan2(mag_xm(k),mag_ym(k));
+    psi_Nh =  atan2(mag_LP(1,k)',mag_LP(2,k)');% experiment data @@
     psi_err(k1-1) = psi_N(k) - psi_Nh;
     %Q_E_B_e,
     [s6_P00_z,s6_K_z,s6_z_update,s6_Mu_z,dQ,dQ11]=Kalman_Filter_update_7_8_radio(s6_P00_z,Q_E_B_e,QE_B_m,s6_H,s6_R,Q_E_B,k);
@@ -695,7 +693,7 @@ k1 = k1 + 1;
     inv_QE_B_m = -QE_B_m;
     inv_QE_B_m(4,1) = QE_B_m(4,1);
     Qtmp = [inv_QE_B_m(4) inv_QE_B_m(1) inv_QE_B_m(2) inv_QE_B_m(3)];
-    eulersave(:,k) = quatern2euler(Qtmp);
+    eulersave(:,k) = quatern2euler(Qtmp);    
     dQ1 = qmult(Q_E_B(:,k),inv_QE_B_m);
 %    dQ1 = qmult(inv_QE_B_m,QE_B);
     dq11(k) = 2*dQ1(1,1);
@@ -710,27 +708,22 @@ end                     % end of one Monte Caro run
 
 %
 n1 = 0.5*(k-1);
-% n1 = 500;
 n2 = k-1;
 
-[(bx0-bx_h(n2))/g (by0-by_h(n2))/g (bz0-bz_h(n2))/g],
-3600*[(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d],
-% ======================================================
-% Three sigma value computations
-% ======================================================
-B = [sort(abs(dq11(n1:n2)*r2d)) sort(abs(dq21(n1:n2)*r2d)) sort(abs(dq31(n1:n2)*r2d))];
+[(bgx0-bgx_h(n2))*r2d (bgy0-bgy_h(n2))*r2d (bgz0-bgz_h(n2))*r2d];
+[mean(x_err(n1:n2)) mean(y_err(n1:n2)) mean(z_err(n1:n2))];
+[std(x_err(n1:n2)) std(y_err(n1:n2)) std(z_err(n1:n2))];
+
+B = [sort(abs(eulersave(1,n1:n2)'*r2d)) sort(abs(eulersave(2,n1:n2)'*r2d)) sort(abs(eulersave(3,n1:n2)'*r2d))];
 N = length(B);
 number = fix(0.9973*N);
 B1 = [B(number,1) B(number,2) B(number,3)]
 
-D = [sort(abs(x_err(n1:n2)')) sort(abs(y_err(n1:n2)')) sort(abs(z_err(n1:n2)'))];
+D = [sort(abs(xpm_Nh(n1:n2))) sort(abs(ypm_Nh(n1:n2))) sort(abs(zpm_Nh(n1:n2)))];
 N = length(D);
 number = fix(0.9973*N);
 D1 = [D(number,1) D(number,2) D(number,3)]
 
-F = [sort(abs(x_err(1000:1500)')) sort(abs(y_err(1000:1500)')) sort(abs(z_err(1000:1500)'))];
-N = length(F);
-number = fix(0.9973*N);
-F1 = [F(number,1) F(number,2) F(number,3)]
-paperplot;
+% plot53_v4;
+plot53;
 plot58;

@@ -19,8 +19,8 @@ for i=1:n
     else
         R1m(i) = sqrt((xr1-x_p_N(i))^2+(yr1-y_p_N(i))^2+(zr1-z_p_N(i))^2)+nvx_r(i);
     end
-    R2m(i) = sqrt((xr2-x_p_N(i))^2+(yr2-y_p_N(i))^2+(zr2-z_p_N(i))^2)+nvy_r(i);
-    R3m(i) = sqrt((xr3-x_p_N(i))^2+(yr3-y_p_N(i))^2+(zr3-z_p_N(i))^2)+nvx_r(i);
+    R2m(i) = sqrt((xr2-x_p_N(i))^2+(yr2-y_p_N(i))^2+(zr2-z_p_N(i))^2)+nvx_r(i);
+    R3m(i) = sqrt((xr3-x_p_N(i))^2+(yr3-y_p_N(i))^2+(zr3-z_p_N(i))^2)+nvy_r(i);
     R4m(i) = sqrt((xr4-x_p_N(i))^2+(yr4-y_p_N(i))^2+(zr4-z_p_N(i))^2)+nvy_r(i);
 end
 end
