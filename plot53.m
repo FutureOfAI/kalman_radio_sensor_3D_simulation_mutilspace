@@ -1,4 +1,4 @@
-
+% n1 = 1;
 % n2 = k-1;
 %
 % figure(1)
@@ -37,6 +37,8 @@
 % ylabel('Z angle error in deg')
 % grid
 %
+% n1 = 500;
+% n2 = 2000;
 figure (16)
 % subplot(311)
 % plot3(x_p_N,y_p_N,z_p_N,'r-',xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
@@ -44,8 +46,8 @@ figure (16)
 plot(xpm_Nh(n1:n2),ypm_Nh(n1:n2),'g',xr1,yr1,'r*',xr2,yr2,'r*',xr3,yr3,'r*',xr4,yr4,'r*')
 xlabel('X position in m','FontSize',14)
 ylabel('Y position in m','FontSize',14)
-hold on
-rectangle('Position', [1.6 0 2.4 3.4]) 
+% hold on
+% rectangle('Position', [1.6 0 2.4 3.4]) 
 % axis([4.3 5 6 7.5])
 % axis([1.5 3 3.5 4])
 grid
@@ -92,7 +94,7 @@ subplot(311)
 plot(t0(n1:n2),bx_h(n1:n2)/g,'red','linewidth',2)
 xlabel('Time in seconds','FontSize',14)
 ylabel('X-Axis','FontSize',14)
-title('Accel bias err in g','FontSize',18);
+title('Accel bias in g','FontSize',18);
 subplot(312)
 plot(t0(n1:n2),by_h(n1:n2)/g,'red','linewidth',2)
 xlabel('Time in seconds','FontSize',14)

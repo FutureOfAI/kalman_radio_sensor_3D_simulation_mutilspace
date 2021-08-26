@@ -60,7 +60,7 @@ plot3(x_p_N,y_p_N,z_p_N,xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,y
 xlabel('X position in m','FontSize',18)
 ylabel('Y position in m','FontSize',18)
 zlabel('Z position in m','FontSize',18)
-text(20,10,33,'\fontsize{20}\color{black}screw motion')
+% text(20,10,33,'\fontsize{20}\color{black}linear reciprocal motion')
 view([20 25 10])
 grid
 figure (19)
@@ -70,7 +70,7 @@ plot3(xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*','linew
 xlabel('X position in m','FontSize',18)
 ylabel('Y position in m','FontSize',18)
 zlabel('Z position in m','FontSize',18)
-text(20,10,15,'\fontsize{20}\color{black}Anchors distribution')
+text(20,10,33,'\fontsize{20}\color{black}Anchors distribution')
 view([20 25 10])
 % grid
 figure (21)

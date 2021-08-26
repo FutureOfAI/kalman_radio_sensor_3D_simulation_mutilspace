@@ -2,8 +2,13 @@ function [R1m,R2m,R3m,R4m,nvx_r,nvy_r] = radio_sensor3d_m_4(xr1,yr1,zr1,xr2,yr2,
 %radiosensor_err_factor = 1.0; R1m(i) = sqrt((xr1-x_p_N(i))^2+(yr1-y_p_N(i))^2+h^2)+nvx_r(i);
 %sig_x_r=radiosensor_err_factor*0.1;              % radio sensor measurement noise in meter/sec
 %sig_y_r=radiosensor_err_factor*0.2;              % radio sensor measurement noise in meter/sec in y-direction
+
 nvx_r=normrnd(0,sig_x_r,1,n);
 nvy_r=normrnd(0,sig_y_r,1,n);
+
+% nvx_r = screwt(0.1,0.3,3,sig_x_r,sig_y_r,n);
+% nvy_r = screwt(0.1,0.3,3,sig_x_r,sig_y_r,n);
+
 R1m=zeros(m);
 R2m=zeros(m);
 R3m=zeros(m);

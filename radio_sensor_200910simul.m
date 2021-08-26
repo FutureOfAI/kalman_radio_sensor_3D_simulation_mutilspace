@@ -41,38 +41,38 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
 % ======================================================
 % Define four UWB sensors locations
 % =====================================================
-%         xr1 = 0;% in meter
-%         yr1 = 0;% in meter
-%         zr1 = 25;% in meter
-%         xr2 = 25;
-%         yr2 = 0;
-%         zr2 = 25;
-%         xr3 = 25*cos(70*d2r);% in meter
-%         yr3 = 25*sin(70*d2r);% in meter
-%         zr3 = 25;
-%         xr4 = 25*cos(70*d2r)*sin(45*d2r);
-%         yr4 = 25*cos(70*d2r)*cos(45*d2r);
-%         zr4 = 25-25*sin(70*d2r);% in meter
-    xr1 = 0;% in meter
-    yr1 = 0;% in meter
-    zr1 = 0;% in meter
-    xr2 = 0;
-    yr2 = 50;
-    zr2 = 0;
-
-    psi = 85*d2r;
-    r3 = 50;
-    xr3 = r3*cos(psi);% in meter
-    yr3 = r3*sin(psi);% in meter
-    zr3 = 0;
-
-    phi = 0*d2r;
-    beta = 45*d2r;
-    alpha = 45*d2r;
-    r4 = 50;
-    xr4 = r4*sin(phi)*cos(beta);
-    yr4 = r4*sin(phi)*cos(alpha);
-    zr4 = r4*cos(phi);% in meter
+        xr1 = 0;% in meter
+        yr1 = 0;% in meter
+        zr1 = 25;% in meter
+        xr2 = 25;
+        yr2 = 0;
+        zr2 = 25;
+        xr3 = 25*cos(90*d2r);% in meter
+        yr3 = 25*sin(90*d2r);% in meter
+        zr3 = 25;
+        xr4 = 25*cos(90*d2r)*sin(45*d2r);
+        yr4 = 25*cos(90*d2r)*cos(45*d2r);
+        zr4 = 25-25*sin(90*d2r);% in meter
+%     xr1 = 0;% in meter
+%     yr1 = 0;% in meter
+%     zr1 = 0;% in meter
+%     xr2 = 0;
+%     yr2 = 50;
+%     zr2 = 0;
+% 
+%     psi = 90*d2r;
+%     r3 = 50;
+%     xr3 = r3*cos(psi);% in meter
+%     yr3 = r3*sin(psi);% in meter
+%     zr3 = 0;
+% 
+%     phi = 0*d2r;
+%     beta = 45*d2r;
+%     alpha = 45*d2r;
+%     r4 = 50;
+%     xr4 = r4*sin(phi)*cos(beta);
+%     yr4 = r4*sin(phi)*cos(alpha);
+%     zr4 = r4*cos(phi);% in meter
     
     HH = [xr2-xr1, yr2-yr1, zr2-zr1
         xr3-xr1, yr3-yr1, zr3-zr1
@@ -95,8 +95,8 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
         gama_0 = 1*45*d2r;
         apha_0 = 1*45*d2r;
         ft =1*0.01;
-        wt = 2*pi*ft;
-        radius = 1*20;
+        wt = 1*2*pi*ft;
+        radius = 1*10;
   %      T = 1;
         delta_t = dt;                                  % delta time for simulating the true dynamics = 0.01 sec
         delta_s = 5*delta_t;                           % sampling at every 0.5 second for the Kalman filter
@@ -113,7 +113,7 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
         theta_0 = -0*1.5*d2r;%y
         psi_0 = 1*4.5*d2r;%z
    %     wn = 2*pi*fn*d2r;
-        wn = 2*pi*fn;% rad
+        wn =4*pi*fn;% rad
         wx(1:n) = 0*wn;
         wy(1:n) = 0*wn;
         wz(1:n) = 0*wn;
@@ -191,7 +191,7 @@ if (profile_flag == 2),
 end
 
 if (profile_flag == 3)
-    mag_angle = 2.000;
+    mag_angle = 4.000;
     for i = 2:n,
          phi_N(i) = phi_N(i-1) + wx(i-1)*dt;
          theta_N(i) = theta_N(i-1) + wy(i-1)*dt;
@@ -747,15 +747,15 @@ n2 = k-1;
 % ======================================================
 % Three sigma value computations
 % ======================================================
-% B = [sort(abs(dq11(n1:n2)*r2d)) sort(abs(dq21(n1:n2)*r2d)) sort(abs(dq31(n1:n2)*r2d))];
-% N = length(B);
-% number = fix(0.9973*N);
-% B1 = [B(number,1) B(number,2) B(number,3)]
+B = [sort(abs(dq11(n1:n2)*r2d)) sort(abs(dq21(n1:n2)*r2d)) sort(abs(dq31(n1:n2)*r2d))];
+N = length(B);
+number = fix(0.9973*N);
+B1 = [B(number,1) B(number,2) B(number,3)]
 % 
-% D = [sort(abs(x_err(n1:n2)')) sort(abs(y_err(n1:n2)')) sort(abs(z_err(n1:n2)'))];
-% N = length(D);
-% number = fix(0.9973*N);
-% D1 = [D(number,1) D(number,2) D(number,3)]
+D = [sort(abs(x_err(n1:n2)')) sort(abs(y_err(n1:n2)')) sort(abs(z_err(n1:n2)'))];
+N = length(D);
+number = fix(0.9973*N);
+D1 = [D(number,1) D(number,2) D(number,3)]
 % 
 % F = [sort(abs(x_err(1000:1500)')) sort(abs(y_err(1000:1500)')) sort(abs(z_err(1000:1500)'))];
 % N = length(F);
@@ -772,7 +772,7 @@ end
 
 LS_delta_P = [x_p_N-r(1,:); y_p_N-r(2,:); z_p_N-r(3,:)];
 err1 = LS_delta_P(1,:).^2+LS_delta_P(2,:).^2+LS_delta_P(3,:).^2;
-A1 = mean(err1)
+% A1 = mean(err1);
 
  % CRLB
 for jj=1:n-1
@@ -793,10 +793,10 @@ for jj=1:n-1
 end   
 
 err = abs(plot_E_dp(1,:)')+abs(plot_E_dp(2,:)')+abs(plot_E_dp(3,:)');
-B1 = mean(err)
+% B1 = mean(err);
 
-err3 = x_err.^2 + y_err.^2 + z_err.^2;
-D1 = mean(err3)
+err3 = sqrt(x_err(n1:n2).^2 + y_err(n1:n2).^2 + z_err(n1:n2).^2);
+E1 = [mean(err3), std(err3)]
 
 paperplot;
 plot58;

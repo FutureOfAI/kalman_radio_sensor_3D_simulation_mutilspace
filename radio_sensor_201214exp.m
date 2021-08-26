@@ -63,19 +63,24 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
         yr2 = 0;
         zr2 = 2.52;
         
-        psi = 70*d2r;
+        psi = 90*d2r;
         xr3 = 5.79*cos(psi);% in meter
         yr3 = 5.79*sin(psi);% in meter
         zr3 = 2.52;
         
-        xr4 = 0.41;
-        yr4 = 0.64;
-        zr4 = 0.464;% in meter  
-%         phi = 65*d2r;
+%         xr4 = 0.41;
+%         yr4 = 0.64;
+%         zr4 = 0.464 + 0.0;% in meter
+        xr4 = 0;
+        yr4 = 0;
+        zr4 = 0.464;% in meter
+    
+%         phi = 20*d2r;
 %         xr4 = 2.056*sin(phi)*sin(45*d2r);
 %         yr4 = 2.056*sin(phi)*cos(45*d2r);
 %         zr4 = 2.52-2.056*cos(phi);
-              
+
+
 % ================================
 % Set the simulation run time
 % ================================
@@ -156,7 +161,7 @@ mag_E = (cz(-90*d2r)*cx(180*d2r)*mag_E_0')';
     % profile_flag = 3;         race track motion
     profile_flag = 1;
     %
-if (profile_flag ==1),       
+if (profile_flag ==1)       
 % ====================================================
 % Generate platform motion in N-frame
 % ===================================================
@@ -492,7 +497,7 @@ s6_H(1,1) = 1;
 s6_H(2,2) = 1;
 s6_H(3,3) = 1;
 
-s6_R = 1*[(1.5*d2r)^2 0 0                     % TRIAD attitude determination error in x - axis
+s6_R = 150*[(1.5*d2r)^2 0 0                     % TRIAD attitude determination error in x - axis
     0 (1.5*d2r)^2 0                           % TRIAD attitude determination error in y - axis
     0 0 (1.5*d2r)^2];                         % TRIAD attitude determination error in z - axis
 % Define the process noise matrix Q = s6_Q_z associated with the gyro errors
@@ -500,7 +505,7 @@ s6_Q_z=zeros(6);
 s6_Q_z0(1:3,1:3) = [sig_x_arw^2 0 0 
                     0 sig_y_arw^2 0 
                     0 0 sig_z_arw^2]; 
-s6_Q_z(1:3,1:3) =100*s6_Q_z0; % 100
+s6_Q_z(1:3,1:3) =100*s6_Q_z0; % rec:100 other:0.4
 s6_Q_z(4,4) = sig_x_rrw^2;
 s6_Q_z(5,5) = sig_y_rrw^2;
 s6_Q_z(6,6) = sig_z_rrw^2;
@@ -750,12 +755,13 @@ N = length(D);
 number = fix(0.9973*N);
 D1 = [D(number,1) D(number,2) D(number,3)]
 
-ddx = mean(xpm_Nh(n1:n2)) - 2.47;
-ddy = mean(ypm_Nh(n1:n2)) - 2.81;
+ddx = mean(xpm_Nh(n1:n2)) - 2.45;
+ddy = mean(ypm_Nh(n1:n2)) - 3.74;
 % ddx = mean(xpm_Nh(n1:n2)) - 4.19;
 % ddy = mean(ypm_Nh(n1:n2)) + 2.8;
-ddz = mean(zpm_Nh(n1:n2)) - 0.7;
+ddz = mean(zpm_Nh(n1:n2)) - 0.52;
 pdop = sqrt(ddx^2+ddy^2+ddz^2)
+
 
 % plot53_v4;
 plot53;

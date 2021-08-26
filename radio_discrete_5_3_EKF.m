@@ -36,12 +36,12 @@ if simul_nlos == 1
     end
 
 else
-    lamda = 1; % 0.001
+    lamda = 0.001; % 0.001 0.01 0.0001 rec: 1 line_svm:0.000005
 %     lamda = 2000; % simul 1000
 end
- 
-R = lamda*[sig_x_r^2 0 0 0
+        % 1 line_svm:10
+R = lamda*0*eye(4)+lamda*[sig_x_r^2 0 0 0
     0 sig_y_r^2 0 0
     0 0 sig_x_r^2 0
-    0 0 0 sig_y_r^2];    
+    0 0 0 sig_y_r^2];
 end

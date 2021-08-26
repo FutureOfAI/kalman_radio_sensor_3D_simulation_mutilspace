@@ -1,11 +1,11 @@
-% close all;
-% clear all;
-% clc;
+close all;
+clear all;
+clc;
 
 % '1214v2.csv' ??light of sight
 % 'obsall.csv' ???????
-imu = load('output_IMU_rec.csv'); 
-uwb = load('output_UWB_rec.csv');
+imu = load('output_IMU_static_v1.csv'); 
+uwb = load('output_UWB_static_v1.csv');
 
 t = 1:8000;
 g = 9.8;
@@ -66,11 +66,20 @@ post(1,:) = post(1,:)+1.0;
 post(2,:) = post(2,:)+0.4;
 post(3,:) = post(3,:)+0.0;
 post(4,:) = post(4,:)+0.0;
+% post(1,:) = post(1,:)+1.22;
+% post(2,:) = post(2,:)+0.86;
+% post(3,:) = post(3,:)+0.24;
+% post(4,:) = post(4,:)+0.62;
 % group Experiment supplement
 % post(1,:) = post(1,:)+0.5;
 % post(2,:) = post(2,:)+0.24;
 % post(3,:) = post(3,:)-0.1;
 % post(4,:) = post(4,:)+0.36;
+% anchor psi90deg
+% post(1,:) = post(1,:)-0.185;
+% post(2,:) = post(2,:)+0.525;
+% post(3,:) = post(3,:)+0.145;
+% post(4,:) = post(4,:)+0.175;
 
 pos(:,1) = post(:,1);
 for i=1:10:8000
@@ -90,22 +99,29 @@ for k = 1:8000
 end
 
 
-
-
+an1_los = post(1,1:800);
+an2_los = post(2,1:800);
+an3_los = post(3,1:800);
+an4_los = post(4,1:800);
 %
 figure (2)
 subplot(411)
-plot(1:800,uwb(1:800,7))
-ylabel('Anchor1 distance (m)')
+% plot(1:800,uwb(1:800,7))
+plot(1:800,post(1,1:800))
+ylabel('r_1 (m)','FontSize',12)
 subplot(412)
-plot(1:800,uwb(1:800,8))
-ylabel('Anchor2 distance (m)')
+% plot(1:800,uwb(1:800,8))
+plot(1:800,post(2,1:800))
+ylabel('r_2 (m)','FontSize',12)
 subplot(413)
-plot(1:800,uwb(1:800,9))
-ylabel('Anchor3 distance (m)')
+% plot(1:800,uwb(1:800,9))
+plot(1:800,post(3,1:800))
+ylabel('r_3 (m)','FontSize',12)
 subplot(414)
-plot(1:800,uwb(1:800,10))
-ylabel('Anchor4 distance (m)')
+% plot(1:800,uwb(1:800,10))
+plot(1:800,post(4,1:800))
+ylabel('r_4 (m)','FontSize',12)
+xlabel('samples','FontSize',12)
 
 figure (30)
 subplot(411)

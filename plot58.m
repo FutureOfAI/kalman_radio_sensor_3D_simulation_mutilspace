@@ -16,8 +16,14 @@ xxx2 = 7900;
 % xlabel('Time in seconds')
 % grid
 %
+actual_pos = [x_p_N;y_p_N;z_p_N];
+measure_pos = [xpm_Nh';ypm_Nh';zpm_Nh'];
+
+
 figure (8)
-plot3(xpm_Nh(n1:n2),ypm_Nh(n1:n2),zpm_Nh(n1:n2),'b',xr1,yr1,zr1,'r*',xr2,yr2,zr2,'r*',xr3,yr3,zr3,'r*',xr4,yr4,zr4,'r*')
+% plot3(x_p_N(n1:n2),y_p_N(n1:n2),z_p_N(n1:n2),'g-.','linewidth',1)
+% hold on
+plot3(xpm_Nh(n1:n2),ypm_Nh(n1:n2),zpm_Nh(n1:n2),'r--','linewidth',1)
 xlabel('X position in m','FontSize',18)
 ylabel('Y position in m','FontSize',18)
 % view([20 25 10])
